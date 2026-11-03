@@ -24,7 +24,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
   subtitle,
   description,
   icon: Icon,
-  iconClassName = 'text-accent bg-sky-50',
+  iconClassName = 'text-primary dark:text-sky-300 bg-sky-50 dark:bg-sky-950/70 border border-sky-200 dark:border-sky-800/80',
   children,
   footer,
   maxWidth = 'md',

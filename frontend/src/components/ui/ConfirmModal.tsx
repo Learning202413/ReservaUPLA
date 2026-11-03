@@ -29,15 +29,15 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   icon,
 }) => {
   const iconByVariant: Record<string, React.ReactNode> = {
-    danger: <Trash2 className="w-6 h-6 text-rose-600" />,
-    primary: <AlertTriangle className="w-6 h-6 text-primary" />,
-    success: <CheckCircle2 className="w-6 h-6 text-emerald-600" />,
+    danger: <Trash2 className="w-6 h-6 text-rose-600 dark:text-rose-400" />,
+    primary: <AlertTriangle className="w-6 h-6 text-primary dark:text-sky-400" />,
+    success: <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />,
   };
 
   const bgByVariant: Record<string, string> = {
-    danger: 'bg-rose-50 border-rose-200',
-    primary: 'bg-sky-50 border-sky-200',
-    success: 'bg-emerald-50 border-emerald-200',
+    danger: 'bg-rose-50 dark:bg-rose-950/70 border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400',
+    primary: 'bg-sky-50 dark:bg-sky-950/70 border-sky-200 dark:border-sky-800 text-primary dark:text-sky-400',
+    success: 'bg-emerald-50 dark:bg-emerald-950/70 border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400',
   };
 
   return (

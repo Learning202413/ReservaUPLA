@@ -79,10 +79,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const content = (
-    <div className="w-64 bg-[#00334D] text-white flex flex-col justify-between h-full select-none border-r border-sky-950 font-sans">
+    <div className="w-64 bg-sidebar text-white flex flex-col justify-between h-full select-none border-r border-sidebar-line font-sans transition-colors">
       <div>
         {/* Cabecera Sidebar con Logo */}
-        <div className="p-5 flex items-center justify-between border-b border-sky-900/60">
+        <div className="p-5 flex items-center justify-between border-b border-sidebar-line">
           <div className="flex items-center gap-3">
             <div className="bg-white p-2 rounded-xl shadow-xs">
               <img
@@ -148,7 +148,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Tarjeta de Especificación y Rol en Pie */}
-      <div className="p-4 border-t border-sky-900/60 m-3 rounded-2xl bg-sky-950/50 border border-sky-900">
+      <div className="p-4 border-t border-sidebar-line m-3 rounded-2xl bg-white/5 border border-white/10">
         <div className="flex items-center gap-2 text-sky-300 text-xs font-bold mb-1">
           <ShieldCheck className="w-4 h-4 text-sky-400" />
           <span>Perfil Activo</span>

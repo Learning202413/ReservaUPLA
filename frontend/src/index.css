@@ -159,6 +159,11 @@
   box-shadow: 0 0 0 3px rgba(0, 102, 153, 0.15);
 }
 
+select option {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+}
+
 .modal-close-btn {
   display: inline-flex;
   align-items: center;
