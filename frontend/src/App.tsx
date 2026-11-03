@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Header } from './components/layout/Header';
-import { Sidebar, TabType } from './components/layout/Sidebar';
-import { DashboardView } from './views/DashboardView';
-import { ReservasView } from './views/ReservasView';
-import { NuevaReservaView } from './views/NuevaReservaView';
-import { AmbientesView } from './views/AmbientesView';
-import { UsuariosView } from './views/UsuariosView';
-import { LoginView } from './views/LoginView';
+import { MainLayout } from './layouts/MainLayout';
+import { LoginPage } from './pages/LoginPage';
+import { DashboardPage } from './pages/DashboardPage';
+import { ReservasPage } from './pages/ReservasPage';
+import { NuevaReservaPage } from './pages/NuevaReservaPage';
+import { AmbientesPage } from './pages/AmbientesPage';
+import { UsuariosPage } from './pages/UsuariosPage';
+import { PaginaActiva } from './components/layout/Sidebar';
 import { Usuario } from './types';
 
 const STORAGE_KEY = 'reservaupla_sesion_usuario';
@@ -21,7 +21,7 @@ export function App() {
     }
   });
 
-  const [activeTab, setActiveTab] = useState<TabType>('dashboard');
+  const [paginaActiva, setPaginaActiva] = useState<PaginaActiva>('dashboard');
 
   useEffect(() => {
     if (usuario) {
@@ -33,7 +33,7 @@ export function App() {
 
   const handleLoginSuccess = (usuarioLogueado: Usuario) => {
     setUsuario(usuarioLogueado);
-    setActiveTab('dashboard');
+    setPaginaActiva('dashboard');
   };
 
   const handleLogout = () => {
@@ -50,48 +50,40 @@ export function App() {
     setUsuario(actualizado);
   };
 
-  // Si no hay sesión activa, mostrar la pantalla de Login institucional (Heurística de Nielsen 1 y 4)
+  // 1. Pantalla de Autenticación Institucional (AuthLayout + AuthBrandPanel 60/40)
   if (!usuario) {
-    return <LoginView onLoginSuccess={handleLoginSuccess} />;
+    return <LoginPage onSuccess={handleLoginSuccess} />;
   }
 
+  // 2. Shell Principal del Sistema (MainLayout + Sidebar + Header)
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header Institucional con Datos de Sesión Activa */}
-      <Header
-        usuarioActual={usuario}
-        onLogout={handleLogout}
-        onCambiarRol={handleCambiarRolEnCaliente}
-      />
+    <MainLayout
+      usuario={usuario}
+      onLogout={handleLogout}
+      onCambiarRol={handleCambiarRolEnCaliente}
+      paginaActiva={paginaActiva}
+      onSelectPagina={setPaginaActiva}
+    >
+      {paginaActiva === 'dashboard' && (
+        <DashboardPage onNavigate={setPaginaActiva} />
+      )}
 
-      <div className="flex-1 flex max-w-7xl w-full mx-auto">
-        {/* Barra Lateral de Navegación */}
-        <Sidebar activeTab={activeTab} onSelectTab={setActiveTab} />
+      {paginaActiva === 'reservas' && (
+        <ReservasPage rolActual={usuario.rol} />
+      )}
 
-        {/* Área Principal de Contenido */}
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
-          {activeTab === 'dashboard' && (
-            <DashboardView onNavigate={(tab) => setActiveTab(tab)} />
-          )}
+      {paginaActiva === 'nueva-reserva' && (
+        <NuevaReservaPage onSuccess={() => setPaginaActiva('reservas')} />
+      )}
 
-          {activeTab === 'reservas' && (
-            <ReservasView rolActual={usuario.rol} />
-          )}
+      {paginaActiva === 'ambientes' && (
+        <AmbientesPage />
+      )}
 
-          {activeTab === 'nueva-reserva' && (
-            <NuevaReservaView onSuccess={() => setActiveTab('reservas')} />
-          )}
-
-          {activeTab === 'ambientes' && (
-            <AmbientesView />
-          )}
-
-          {activeTab === 'usuarios' && (
-            <UsuariosView />
-          )}
-        </main>
-      </div>
-    </div>
+      {paginaActiva === 'usuarios' && (
+        <UsuariosPage />
+      )}
+    </MainLayout>
   );
 }
 
