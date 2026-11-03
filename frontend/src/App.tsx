@@ -41,15 +41,6 @@ export function App() {
     localStorage.removeItem(STORAGE_KEY);
   };
 
-  const handleCambiarRolEnCaliente = (nuevoRol: string) => {
-    if (!usuario) return;
-    const actualizado: Usuario = {
-      ...usuario,
-      rol: nuevoRol as any,
-    };
-    setUsuario(actualizado);
-  };
-
   // 1. Pantalla de Autenticación Institucional (AuthLayout + AuthBrandPanel 60/40)
   if (!usuario) {
     return <LoginPage onSuccess={handleLoginSuccess} />;
@@ -60,7 +51,6 @@ export function App() {
     <MainLayout
       usuario={usuario}
       onLogout={handleLogout}
-      onCambiarRol={handleCambiarRolEnCaliente}
       paginaActiva={paginaActiva}
       onSelectPagina={setPaginaActiva}
     >

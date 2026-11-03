@@ -6,7 +6,6 @@ import { ThemeToggle } from './ThemeToggle';
 interface HeaderProps {
   usuario?: Usuario | null;
   onLogout: () => void;
-  onCambiarRol?: (rol: string) => void;
   breadcrumbSection?: string;
   breadcrumbPage?: string;
   onToggleSidebar?: () => void;
@@ -15,7 +14,6 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   usuario,
   onLogout,
-  onCambiarRol,
   breadcrumbSection = 'Sistema',
   breadcrumbPage = 'Dashboard',
   onToggleSidebar,
@@ -101,85 +99,35 @@ export const Header: React.FC<HeaderProps> = ({
               <ChevronDown className={`w-3.5 h-3.5 text-ink-muted transition-transform duration-200 hidden sm:block ${menuAbierto ? 'rotate-180' : ''}`} />
             </button>
 
-            {/* Menú Desplegable */}
+            {/* Menú Desplegable (GirasolesRes Pattern) */}
             {menuAbierto && (
               <div
-                className="absolute right-0 mt-2 w-64 bg-surface rounded-2xl shadow-xl border border-line py-2 z-50 animate-in fade-in zoom-in-95 duration-100"
+                className="absolute right-0 mt-2 w-56 bg-surface rounded-2xl shadow-xl border border-line py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
                 role="menu"
               >
-                <div className="px-4 py-2 border-b border-line">
+                <div className="px-4 py-2.5 border-b border-line">
                   <p className="text-xs font-bold text-ink truncate">
                     {usuario?.nombreCompleto}
                   </p>
-                  <p className="text-2xs text-ink-muted truncate">
+                  <p className="text-2xs text-ink-muted truncate mt-0.5">
                     {usuario?.correo}
                   </p>
                 </div>
 
-                {onCambiarRol && (
-                  <div className="px-4 py-2.5 border-b border-line bg-slate-50/50 dark:bg-slate-900/50">
-                    <label className="block text-3xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
-                      Cambio de Rol:
-                    </label>
-                    <div className="grid grid-cols-3 gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onCambiarRol('Administrador');
-                          setMenuAbierto(false);
-                        }}
-                        className={`px-2 py-1 rounded-lg text-3xs font-bold border transition-colors cursor-pointer ${
-                          usuario?.rol === 'Administrador'
-                            ? 'bg-[#006699] text-white border-[#006699]'
-                            : 'bg-surface text-ink border-line hover:bg-slate-100 dark:hover:bg-slate-800'
-                        }`}
-                      >
-                        Admin
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onCambiarRol('Solicitante');
-                          setMenuAbierto(false);
-                        }}
-                        className={`px-2 py-1 rounded-lg text-3xs font-bold border transition-colors cursor-pointer ${
-                          usuario?.rol === 'Solicitante'
-                            ? 'bg-[#006699] text-white border-[#006699]'
-                            : 'bg-surface text-ink border-line hover:bg-slate-100 dark:hover:bg-slate-800'
-                        }`}
-                      >
-                        Docente
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onCambiarRol('Responsable');
-                          setMenuAbierto(false);
-                        }}
-                        className={`px-2 py-1 rounded-lg text-3xs font-bold border transition-colors cursor-pointer ${
-                          usuario?.rol === 'Responsable'
-                            ? 'bg-[#006699] text-white border-[#006699]'
-                            : 'bg-surface text-ink border-line hover:bg-slate-100 dark:hover:bg-slate-800'
-                        }`}
-                      >
-                        Encargado
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuAbierto(false);
-                    onLogout();
-                  }}
-                  className="w-full px-4 py-2.5 text-xs text-left text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center gap-2 cursor-pointer transition-colors font-semibold"
-                  role="menuitem"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Cerrar Sesión</span>
-                </button>
+                <div className="p-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuAbierto(false);
+                      onLogout();
+                    }}
+                    className="w-full px-3 py-2 rounded-xl text-xs text-left text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center gap-2 cursor-pointer transition-colors font-semibold"
+                    role="menuitem"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Cerrar Sesión</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>

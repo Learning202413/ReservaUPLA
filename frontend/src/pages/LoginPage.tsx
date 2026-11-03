@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Lock, Mail, AlertTriangle } from 'lucide-react';
 import { InputField, Button, FormMessage } from '../components/ui';
 import { LoginDemoProfiles } from '../components/usuarios/LoginDemoProfiles';
-import { ThemeToggle } from '../components/layout/ThemeToggle';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { api } from '../services/api';
 import { Usuario } from '../types';
@@ -103,20 +102,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess, initialMessage 
   return (
     <AuthLayout>
       <div className="w-full text-left max-w-md mx-auto">
-        {/* Cabecera del formulario con botón de tema */}
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <span className="text-3xs font-extrabold uppercase tracking-widest text-primary bg-sky-50 dark:bg-sky-950/50 px-2 py-0.5 rounded-md border border-sky-200 dark:border-sky-800">
-              Portal Institucional
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-ink tracking-tight mt-1.5">
-              Iniciar Sesión
-            </h2>
-            <p className="text-xs sm:text-sm text-ink-muted mt-1 leading-relaxed">
-              Ingrese sus credenciales oficiales para gestionar o solicitar ambientes.
-            </p>
-          </div>
-          <ThemeToggle className="shrink-0" />
+        {/* Cabecera del formulario */}
+        <div className="mb-5 text-left">
+          <span className="text-3xs font-extrabold uppercase tracking-widest text-primary bg-sky-50 dark:bg-sky-950/50 px-2 py-0.5 rounded-md border border-sky-200 dark:border-sky-800">
+            Portal Institucional
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-black text-ink tracking-tight mt-1.5">
+            Iniciar Sesión
+          </h2>
+          <p className="text-xs sm:text-sm text-ink-muted mt-1 leading-relaxed">
+            Ingrese sus credenciales oficiales para gestionar o solicitar ambientes.
+          </p>
         </div>
 
         {/* Mensaje Contextual de Error / Notificación */}

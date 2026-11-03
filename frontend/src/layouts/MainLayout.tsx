@@ -8,7 +8,6 @@ interface MainLayoutProps {
   children: React.ReactNode;
   usuario?: Usuario | null;
   onLogout: () => void;
-  onCambiarRol?: (rol: string) => void;
   paginaActiva: PaginaActiva;
   onSelectPagina: (pagina: PaginaActiva) => void;
 }
@@ -17,7 +16,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   children,
   usuario,
   onLogout,
-  onCambiarRol,
   paginaActiva,
   onSelectPagina,
 }) => {
@@ -56,7 +54,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         <Header
           usuario={usuario}
           onLogout={() => setModalLogoutAbierto(true)}
-          onCambiarRol={onCambiarRol}
           breadcrumbSection={breadcrumbs.seccion}
           breadcrumbPage={breadcrumbs.pagina}
           onToggleSidebar={() => setSidebarAbierto((prev) => !prev)}
