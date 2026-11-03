@@ -69,7 +69,10 @@ export function App() {
       )}
 
       {paginaActiva === 'nueva-reserva' && (
-        <NuevaReservaPage onSuccess={() => setPaginaActiva('reservas')} />
+        <NuevaReservaPage
+          onSuccess={() => setPaginaActiva('reservas')}
+          onVolver={() => setPaginaActiva('reservas')}
+        />
       )}
 
       {paginaActiva === 'ambientes' && (

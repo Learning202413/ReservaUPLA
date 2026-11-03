@@ -15,15 +15,17 @@ import {
   Clock,
   RotateCcw,
   Info,
+  ArrowLeft,
 } from 'lucide-react';
 
 interface NuevaReservaPageProps {
   onSuccess: () => void;
+  onVolver?: () => void;
 }
 
 const DRAFT_KEY = 'reservaupla_draft_reserva';
 
-export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ onSuccess }) => {
+export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ onSuccess, onVolver }) => {
   const [ambientes, setAmbientes] = useState<Ambiente[]>([]);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -234,6 +236,19 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ onSuccess })
       <PageHeader
         title="Nueva Reserva"
         subtitle="Verificación visual en tiempo real de disponibilidad horaria, aforo y políticas institucionales."
+        actions={
+          onVolver && (
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              icon={<ArrowLeft className="w-4 h-4" />}
+              onClick={onVolver}
+            >
+              Volver a Reservas
+            </Button>
+          )
+        }
       />
 
       {borradorRecuperado && (

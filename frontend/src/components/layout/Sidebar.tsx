@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, CalendarDays, PlusCircle, Building2, Users, X, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Building2, Users, X, ShieldCheck } from 'lucide-react';
 import { Usuario } from '../../types';
 
 export type PaginaActiva = 'dashboard' | 'reservas' | 'nueva-reserva' | 'ambientes' | 'usuarios';
@@ -41,11 +41,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: 'Control de Reservas',
           icon: <CalendarDays className="w-5 h-5" />,
         },
-        {
-          id: 'nueva-reserva',
-          label: 'Nueva Reserva',
-          icon: <PlusCircle className="w-5 h-5" />,
-        },
       ],
     },
     {
@@ -74,6 +69,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const handleSelect = (id: PaginaActiva) => {
     onSelectPagina(id);
     if (onCloseMobile) onCloseMobile();
+  };
+
+  // Mapeo de ítem activo: si estamos en el subflujo 'nueva-reserva', activamos visualmente 'reservas' (como en GirasolesRes)
+  const isItemActive = (itemId: PaginaActiva) => {
+    if (paginaActiva === itemId) return true;
+    if (paginaActiva === 'nueva-reserva' && itemId === 'reservas') return true;
+    return false;
   };
 
   const content = (
@@ -121,7 +123,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </p>
 
                 {itemsVisibles.map((item) => {
-                  const isActive = paginaActiva === item.id;
+                  const isActive = isItemActive(item.id);
                   return (
                     <button
                       key={item.id}
