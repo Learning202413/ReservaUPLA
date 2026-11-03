@@ -1,5 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FormMessage, InputField, ModalWrapper, StatusBadge } from '../components/ui';
+import {
+  Button,
+  FormMessage,
+  InputField,
+  ModalWrapper,
+  StatusBadge,
+  FilterBar,
+  DataTable,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableHeaderCell,
+  TableCell,
+  TablePagination,
+} from '../components/ui';
+import { PageHeader } from '../components/layout/PageHeader';
+import { PageContainer } from '../components/layout/PageContainer';
 import { api } from '../services/api';
 import { Usuario } from '../types';
 import { Users, Plus, ShieldCheck, UserCheck } from 'lucide-react';
@@ -9,6 +25,9 @@ export const UsuariosPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [modalAbierto, setModalAbierto] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [busqueda, setBusqueda] = useState<string>('');
+  const [paginaActual, setPaginaActual] = useState<number>(1);
+  const itemsPorPagina = 8;
 
   // Form State
   const [nombre, setNombre] = useState<string>('');
@@ -56,28 +75,41 @@ export const UsuariosPage: React.FC = () => {
     }
   };
 
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-black text-ink tracking-tight">
-            Gestión de Usuarios Solicitantes (RF-01)
-          </h2>
-          <p className="text-xs sm:text-sm text-ink-muted mt-0.5">
-            Padrón de docentes, directores y personal con acceso para reservar ambientes.
-          </p>
-        </div>
+  const usuariosFiltrados = usuarios.filter((u) => {
+    const q = busqueda.toLowerCase();
+    return (
+      u.nombreCompleto.toLowerCase().includes(q) ||
+      u.correo.toLowerCase().includes(q) ||
+      u.rol.toLowerCase().includes(q)
+    );
+  });
 
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => setModalAbierto(true)}
-          className="self-start sm:self-auto shadow-sm"
-        >
-          <Plus className="w-4 h-4 mr-1.5" />
-          <span>Registrar Solicitante</span>
-        </Button>
-      </div>
+  const totalItems = usuariosFiltrados.length;
+  const totalPages = Math.ceil(totalItems / itemsPorPagina);
+  const usuariosPaginados = usuariosFiltrados.slice(
+    (paginaActual - 1) * itemsPorPagina,
+    paginaActual * itemsPorPagina
+  );
+
+  return (
+    <PageContainer>
+      {/* Cabecera Estandarizada con PageHeader */}
+      <PageHeader
+        title="Padrón de Solicitantes y Usuarios"
+        subtitle="Gestión de docentes, directores y personal autorizado para requerir ambientes."
+        count={usuariosFiltrados.length}
+        countLabel="usuarios"
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            icon={<Plus className="w-4 h-4" />}
+            onClick={() => setModalAbierto(true)}
+          >
+            Registrar Solicitante
+          </Button>
+        }
+      />
 
       {message && (
         <FormMessage
@@ -86,81 +118,95 @@ export const UsuariosPage: React.FC = () => {
         />
       )}
 
-      {loading ? (
-        <div className="p-16 text-center text-slate-400">Cargando solicitantes...</div>
-      ) : (
-        <div className="w-full overflow-hidden border border-line rounded-2xl bg-surface shadow-2xs">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse font-sans">
-              <thead>
-                <tr className="bg-slate-50 border-b border-line text-xs font-bold text-ink-muted uppercase tracking-wider">
-                  <th className="py-3.5 px-4">Nombre y Apellidos</th>
-                  <th className="py-3.5 px-4">Correo Institucional</th>
-                  <th className="py-3.5 px-4">Rol del Usuario</th>
-                  <th className="py-3.5 px-4">Estado</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line text-sm">
-                {usuarios.map((u, idx) => (
-                  <tr
-                    key={u.id}
-                    className={`hover:bg-sky-50/40 transition-colors ${
-                      idx % 2 === 0 ? 'bg-surface' : 'bg-slate-50/30'
-                    }`}
-                  >
-                    <td className="py-3.5 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-sky-100 text-primary font-black text-xs flex items-center justify-center">
-                          {u.nombreCompleto.charAt(0)}
-                        </div>
-                        <div>
-                          <p className="font-bold text-ink">{u.nombreCompleto}</p>
-                          <p className="text-3xs text-ink-faint">ID: {u.id.substring(0, 8)}</p>
-                        </div>
-                      </div>
-                    </td>
+      {/* Barra de Filtros y Búsqueda */}
+      <FilterBar
+        searchValue={busqueda}
+        onSearchChange={(val) => {
+          setBusqueda(val);
+          setPaginaActual(1);
+        }}
+        searchPlaceholder="Buscar por nombre, correo o rol..."
+      />
 
-                    <td className="py-3.5 px-4">
-                      <span className="font-mono text-xs font-medium text-slate-600">
-                        {u.correo}
-                      </span>
-                    </td>
+      {/* Tabla con DataTable */}
+      <DataTable
+        loading={loading}
+        isEmpty={usuariosFiltrados.length === 0}
+        emptyTitle="No hay usuarios registrados"
+        emptyMessage="No se encontraron usuarios que coincidan con la búsqueda."
+      >
+        <TableHead>
+          <tr>
+            <TableHeaderCell>Nombre y Apellidos</TableHeaderCell>
+            <TableHeaderCell>Correo Institucional</TableHeaderCell>
+            <TableHeaderCell>Rol del Usuario</TableHeaderCell>
+            <TableHeaderCell align="right">Estado</TableHeaderCell>
+          </tr>
+        </TableHead>
 
-                    <td className="py-3.5 px-4">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-2xs font-extrabold rounded-full ${
-                          u.rol === 'Administrador'
-                            ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                            : u.rol === 'Responsable'
-                            ? 'bg-sky-50 text-sky-700 border border-sky-200'
-                            : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        }`}
-                      >
-                        {u.rol === 'Administrador' ? (
-                          <ShieldCheck className="w-3.5 h-3.5" />
-                        ) : (
-                          <UserCheck className="w-3.5 h-3.5" />
-                        )}
-                        {u.rol}
-                      </span>
-                    </td>
+        <TableBody>
+          {usuariosPaginados.map((u) => (
+            <TableRow key={u.id}>
+              <TableCell>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-sky-100 dark:bg-sky-950/80 text-primary dark:text-sky-300 font-black text-xs flex items-center justify-center border border-sky-200 dark:border-sky-800">
+                    {u.nombreCompleto.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-ink">{u.nombreCompleto}</p>
+                    <p className="text-3xs text-ink-faint">ID: {u.id.substring(0, 8)}</p>
+                  </div>
+                </div>
+              </TableCell>
 
-                    <td className="py-3.5 px-4">
-                      <StatusBadge status={u.activo ? 'Activo' : 'Inactivo'} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+              <TableCell>
+                <span className="font-mono text-xs font-medium text-ink-muted">
+                  {u.correo}
+                </span>
+              </TableCell>
+
+              <TableCell>
+                <span
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-2xs font-bold rounded-full border ${
+                    u.rol === 'Administrador'
+                      ? 'bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800'
+                      : u.rol === 'Responsable'
+                      ? 'bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800'
+                      : 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                  }`}
+                >
+                  {u.rol === 'Administrador' ? (
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                  ) : (
+                    <UserCheck className="w-3.5 h-3.5" />
+                  )}
+                  {u.rol}
+                </span>
+              </TableCell>
+
+              <TableCell align="right">
+                <StatusBadge status={u.activo ? 'Activo' : 'Inactivo'} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </DataTable>
+
+      {/* Paginación */}
+      <TablePagination
+        currentPage={paginaActual}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        itemsPerPage={itemsPorPagina}
+        entityName="usuarios"
+        onPageChange={(pag) => setPaginaActual(pag)}
+      />
 
       {/* Modal Registro Usuario */}
       <ModalWrapper
         isOpen={modalAbierto}
         onClose={() => setModalAbierto(false)}
-        title="Registrar Solicitante (RF-01)"
+        title="Registrar Solicitante"
         subtitle="Alta de nuevo usuario para el sistema ReservaUPLA"
         icon={Users}
       >
@@ -221,7 +267,7 @@ export const UsuariosPage: React.FC = () => {
           </div>
         </form>
       </ModalWrapper>
-    </div>
+    </PageContainer>
   );
 };
 

@@ -46,28 +46,28 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       resolvedIntent = 'danger';
       DefaultIcon = normalized.includes('cancel') ? Ban : XCircle;
     } else if (['pendiente', 'mantenimiento', 'en espera'].includes(normalized)) {
-      resolvedIntent = normalized === 'mantenimiento' ? 'warning' : 'warning';
+      resolvedIntent = 'warning';
       DefaultIcon = normalized === 'mantenimiento' ? Wrench : Clock;
     } else {
       resolvedIntent = 'info';
     }
   }
 
-  const intentStyles = {
-    success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    warning: 'bg-amber-50 text-amber-700 border-amber-200',
-    danger: 'bg-rose-50 text-rose-700 border-rose-200',
-    neutral: 'bg-slate-100 text-slate-600 border-slate-200',
-    info: 'bg-sky-50 text-sky-700 border-sky-200',
+  const intentStyles: Record<StatusIntent, string> = {
+    success: 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800/80',
+    warning: 'bg-amber-50 dark:bg-amber-950/70 text-amber-900 dark:text-amber-300 border-amber-300 dark:border-amber-800/80',
+    danger: 'bg-rose-50 dark:bg-rose-950/70 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-800/80',
+    neutral: 'bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700',
+    info: 'bg-sky-50 dark:bg-sky-950/70 text-sky-800 dark:text-sky-300 border-sky-300 dark:border-sky-800/80',
   };
 
   const IconToRender = CustomIcon || DefaultIcon;
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-2xs font-bold rounded-full border ${intentStyles[resolvedIntent]} ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-2xs font-bold rounded-full border shadow-2xs whitespace-nowrap transition-colors ${intentStyles[resolvedIntent]} ${className}`}
     >
-      <IconToRender className="w-3.5 h-3.5 shrink-0" />
+      <IconToRender className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
       <span>{displayLabel}</span>
     </span>
   );

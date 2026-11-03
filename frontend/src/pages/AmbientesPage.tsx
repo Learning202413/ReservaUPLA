@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FilterBar, FormMessage, InputField, ModalWrapper, StatusBadge } from '../components/ui';
+import {
+  Button,
+  FilterBar,
+  FormMessage,
+  InputField,
+  ModalWrapper,
+  StatusBadge,
+  EmptyState,
+} from '../components/ui';
+import { PageHeader } from '../components/layout/PageHeader';
+import { PageContainer } from '../components/layout/PageContainer';
 import { api } from '../services/api';
 import { Ambiente } from '../types';
 import { Plus, Users, MapPin, Building2 } from 'lucide-react';
@@ -69,27 +79,24 @@ export const AmbientesPage: React.FC = () => {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-black text-ink tracking-tight">
-            Catálogo de Ambientes Universitarios (RF-02)
-          </h2>
-          <p className="text-xs sm:text-sm text-ink-muted mt-0.5">
-            Aulas magnas, laboratorios de cómputo y auditorios registrados en el campus UPLA.
-          </p>
-        </div>
-
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => setModalAbierto(true)}
-          className="self-start sm:self-auto shadow-sm"
-        >
-          <Plus className="w-4 h-4 mr-1.5" />
-          <span>Registrar Ambiente</span>
-        </Button>
-      </div>
+    <PageContainer>
+      {/* Cabecera Estandarizada con PageHeader */}
+      <PageHeader
+        title="Catálogo de Ambientes Universitarios"
+        subtitle="Aulas magnas, laboratorios de cómputo y auditorios registrados en el campus UPLA."
+        count={ambientesFiltrados.length}
+        countLabel="ambientes"
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            icon={<Plus className="w-4 h-4" />}
+            onClick={() => setModalAbierto(true)}
+          >
+            Registrar Ambiente
+          </Button>
+        }
+      />
 
       {message && (
         <FormMessage
@@ -98,6 +105,7 @@ export const AmbientesPage: React.FC = () => {
         />
       )}
 
+      {/* Barra de Búsqueda */}
       <FilterBar
         searchValue={busqueda}
         onSearchChange={setBusqueda}
@@ -105,50 +113,70 @@ export const AmbientesPage: React.FC = () => {
       />
 
       {loading ? (
-        <div className="p-16 text-center text-slate-400">Cargando catálogo...</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1, 2, 3].map((n) => (
+            <div
+              key={n}
+              className="bg-surface border border-line rounded-2xl p-5 space-y-4 animate-pulse"
+            >
+              <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded-lg w-1/3" />
+              <div className="h-6 bg-slate-200 dark:bg-slate-700 rounded-lg w-3/4" />
+              <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded-lg w-1/2" />
+            </div>
+          ))}
+        </div>
+      ) : ambientesFiltrados.length === 0 ? (
+        <EmptyState
+          title="No se encontraron ambientes"
+          description="No hay espacios físicos registrados que coincidan con la búsqueda."
+          actionLabel="Registrar nuevo ambiente"
+          onAction={() => setModalAbierto(true)}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {ambientesFiltrados.map((amb) => (
             <div
               key={amb.id}
-              className="bg-surface border border-line-strong rounded-2xl p-5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"
+              className="bg-surface border border-line rounded-2xl p-5 shadow-2xs hover:shadow-md hover:border-primary/40 transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-3xs font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full bg-sky-50 text-primary border border-sky-200">
+                  <span className="text-3xs font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950/70 text-[#006699] dark:text-sky-300 border border-sky-200 dark:border-sky-800">
                     {amb.tipo}
                   </span>
                   <StatusBadge status={amb.estado} />
                 </div>
 
-                <h3 className="text-base font-bold text-ink">{amb.nombre}</h3>
+                <h3 className="text-base font-black text-ink">{amb.nombre}</h3>
 
                 <div className="mt-3.5 space-y-2 text-xs text-ink-muted">
                   <p className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
+                    <MapPin className="w-4 h-4 text-primary dark:text-sky-400 shrink-0" />
                     <span>{amb.ubicacion}</span>
                   </p>
                   <p className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-slate-400 shrink-0" />
-                    <span>Capacidad: <strong className="text-ink">{amb.capacidad} estudiantes</strong></span>
+                    <Users className="w-4 h-4 text-primary dark:text-sky-400 shrink-0" />
+                    <span>
+                      Capacidad: <strong className="text-ink">{amb.capacidad} estudiantes</strong>
+                    </span>
                   </p>
                 </div>
               </div>
 
               <div className="mt-5 pt-3 border-t border-line flex items-center justify-between text-2xs text-ink-faint">
                 <span>ID: {amb.id.substring(0, 8)}</span>
-                <span className="text-primary font-bold">Habilitado</span>
+                <span className="text-primary dark:text-sky-400 font-bold">Habilitado</span>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Modal Registro Ambiente con ModalWrapper de GirasolesRes */}
+      {/* Modal Registro Ambiente */}
       <ModalWrapper
         isOpen={modalAbierto}
         onClose={() => setModalAbierto(false)}
-        title="Registrar Nuevo Ambiente (RF-02)"
+        title="Registrar Nuevo Ambiente"
         subtitle="Agregue aulas, laboratorios o auditorios al catálogo UPLA"
         icon={Building2}
       >
@@ -236,7 +264,7 @@ export const AmbientesPage: React.FC = () => {
           </div>
         </form>
       </ModalWrapper>
-    </div>
+    </PageContainer>
   );
 };
 

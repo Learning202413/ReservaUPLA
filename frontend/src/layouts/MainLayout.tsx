@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sidebar, PaginaActiva } from '../components/layout/Sidebar';
 import { Header } from '../components/layout/Header';
+import { LogoutModal } from '../components/layout/LogoutModal';
 import { Usuario } from '../types';
 
 interface MainLayoutProps {
@@ -21,6 +22,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   onSelectPagina,
 }) => {
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
+  const [modalLogoutAbierto, setModalLogoutAbierto] = useState(false);
 
   const titulosPorPagina: Record<PaginaActiva, { seccion: string; pagina: string }> = {
     dashboard: { seccion: 'Métricas', pagina: 'Dashboard de Indicadores' },
@@ -33,6 +35,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   const breadcrumbs = titulosPorPagina[paginaActiva] || {
     seccion: 'Sistema',
     pagina: 'ReservaUPLA',
+  };
+
+  const handleConfirmLogout = () => {
+    setModalLogoutAbierto(false);
+    onLogout();
   };
 
   return (
@@ -48,7 +55,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <Header
           usuario={usuario}
-          onLogout={onLogout}
+          onLogout={() => setModalLogoutAbierto(true)}
           onCambiarRol={onCambiarRol}
           breadcrumbSection={breadcrumbs.seccion}
           breadcrumbPage={breadcrumbs.pagina}
@@ -61,6 +68,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           </div>
         </main>
       </div>
+
+      <LogoutModal
+        isOpen={modalLogoutAbierto}
+        onClose={() => setModalLogoutAbierto(false)}
+        onConfirm={handleConfirmLogout}
+      />
     </div>
   );
 };

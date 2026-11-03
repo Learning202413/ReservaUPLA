@@ -1,142 +1,175 @@
 import React, { useEffect, useState } from 'react';
-import { StatCard, StatusBadge, Button } from '../components/ui';
+import { StatCard, Button, StatusBadge } from '../components/ui';
+import { PageHeader } from '../components/layout/PageHeader';
+import { PageContainer } from '../components/layout/PageContainer';
 import { api } from '../services/api';
 import { DashboardKpis, Reserva } from '../types';
-import { Calendar, Clock, CheckCircle2, XCircle, Building2, PlusCircle, ArrowRight } from 'lucide-react';
+import {
+  CalendarDays,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Building2,
+  PlusCircle,
+  ArrowRight,
+  TrendingUp,
+} from 'lucide-react';
 
 interface DashboardPageProps {
-  onNavigate: (pagina: any) => void;
+  onNuevaReservaClick: () => void;
+  onVerTodasClick: () => void;
 }
 
-export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
-  const [kpis, setKpis] = useState<DashboardKpis>({
-    totalReservas: 0,
-    reservasPendientes: 0,
-    reservasAprobadas: 0,
-    reservasRechazadas: 0,
-    ambienteMasUtilizado: 'Cargando...',
-    usosAmbienteMasUtilizado: 0,
-  });
+export const DashboardPage: React.FC<DashboardPageProps> = ({
+  onNuevaReservaClick,
+  onVerTodasClick,
+}) => {
+  const [kpis, setKpis] = useState<DashboardKpis | null>(null);
   const [recientes, setRecientes] = useState<Reserva[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    async function load() {
+    const cargarDatos = async () => {
       setLoading(true);
       try {
-        const [kpiData, resData] = await Promise.all([api.getKpis(), api.getReservas()]);
+        const [kpiData, resData] = await Promise.all([
+          api.getKpis(),
+          api.getReservas(),
+        ]);
         setKpis(kpiData);
         setRecientes(resData.slice(0, 5));
+      } catch (err) {
+        console.error('Error al cargar dashboard:', err);
       } finally {
         setLoading(false);
       }
-    }
-    load();
+    };
+
+    cargarDatos();
   }, []);
 
   return (
-    <div className="space-y-6">
-      {/* Cabecera del Dashboard */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-black text-ink tracking-tight">
-            Dashboard de Gestión de Ambientes
-          </h2>
-          <p className="text-xs sm:text-sm text-ink-muted mt-0.5">
-            Métricas institucionales consolidadas y demanda académica en tiempo real (RF-08).
-          </p>
-        </div>
+    <PageContainer>
+      {/* Cabecera Estandarizada con PageHeader */}
+      <PageHeader
+        title="Dashboard de Gestión de Ambientes"
+        subtitle="Métricas institucionales consolidadas y demanda académica en tiempo real."
+        badge={
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-50 dark:bg-sky-950/70 text-[#006699] dark:text-sky-300 border border-sky-200 dark:border-sky-800 shadow-2xs">
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>Tiempo Real</span>
+          </span>
+        }
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            icon={<PlusCircle className="w-4 h-4" />}
+            onClick={onNuevaReservaClick}
+          >
+            Solicitar Reserva
+          </Button>
+        }
+      />
 
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => onNavigate('nueva-reserva')}
-          className="self-start sm:self-auto shadow-sm"
-        >
-          <PlusCircle className="w-4 h-4 mr-1.5" />
-          <span>Solicitar Reserva</span>
-        </Button>
-      </div>
-
-      {/* Los 5 Indicadores Mínimos de la Rúbrica (RF-08) implementados con StatCard */}
+      {/* Grid de 5 Indicadores (StatCards) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
           title="Total Reservas"
-          value={loading ? '-' : kpis.totalReservas}
-          icon={Calendar}
+          value={loading ? '...' : kpis?.totalReservas ?? 0}
           subtitle="Registradas acumuladas"
-          iconBg="bg-sky-50 text-[#006699]"
+          icon={CalendarDays}
+          iconBg="bg-sky-50 dark:bg-sky-950/70 text-[#006699] dark:text-sky-400"
         />
+
         <StatCard
           title="Pendientes"
-          value={loading ? '-' : kpis.reservasPendientes}
+          value={loading ? '...' : kpis?.reservasPendientes ?? 0}
+          subtitle="En espera de dictamen"
           icon={Clock}
-          subtitle="Por dictamen de admin"
-          badge={{ text: 'En espera', variant: 'warning' }}
-          iconBg="bg-amber-50 text-amber-600"
+          badge={{ text: 'Por revisar', variant: 'warning' }}
+          iconBg="bg-amber-50 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400"
         />
+
         <StatCard
           title="Aprobadas"
-          value={loading ? '-' : kpis.reservasAprobadas}
-          icon={CheckCircle2}
+          value={loading ? '...' : kpis?.reservasAprobadas ?? 0}
           subtitle="Espacios autorizados"
+          icon={CheckCircle2}
           badge={{ text: 'Activas', variant: 'positive' }}
-          iconBg="bg-emerald-50 text-emerald-600"
+          iconBg="bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400"
         />
+
         <StatCard
           title="Rechazadas"
-          value={loading ? '-' : kpis.reservasRechazadas}
+          value={loading ? '...' : kpis?.reservasRechazadas ?? 0}
+          subtitle="Por aforo o cruce horario"
           icon={XCircle}
-          subtitle="Por aforo o cruce"
           badge={{ text: 'Denegadas', variant: 'negative' }}
-          iconBg="bg-rose-50 text-rose-600"
+          iconBg="bg-rose-50 dark:bg-rose-950/70 text-rose-600 dark:text-rose-400"
         />
+
         <StatCard
           title="Más Solicitado"
-          value={loading ? '-' : kpis.ambienteMasUtilizado}
+          value={loading ? '...' : kpis?.ambienteMasUtilizado || 'Sin datos'}
+          subtitle="Mayor demanda académica"
           icon={Building2}
-          subtitle={kpis.usosAmbienteMasUtilizado > 0 ? `${kpis.usosAmbienteMasUtilizado} reservas` : 'Sin datos'}
-          iconBg="bg-slate-100 text-slate-700"
+          iconBg="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
         />
       </div>
 
-      {/* Grilla Inferior: Actividad Reciente + Panel de Usabilidad */}
+      {/* Bloque Inferior: Lista Reciente + Políticas de Operación */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-surface border border-line-strong rounded-2xl p-6 shadow-2xs">
+        {/* Lista de Reservas Recientes */}
+        <div className="lg:col-span-2 bg-surface rounded-2xl border border-line p-5 shadow-2xs">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-bold text-ink uppercase tracking-wider">
-              Solicitudes Recientes de Ambientes
-            </h3>
-            <button
-              type="button"
-              onClick={() => onNavigate('reservas')}
-              className="text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
+            <div>
+              <h3 className="text-base font-black text-ink">
+                Solicitudes Recientes de Ambientes
+              </h3>
+              <p className="text-xs text-ink-muted mt-0.5">
+                Últimos requerimientos ingresados por docentes y directivos
+              </p>
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              icon={<ArrowRight className="w-3.5 h-3.5" />}
+              onClick={onVerTodasClick}
             >
-              <span>Ver todas</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+              Ver todas
+            </Button>
           </div>
 
-          <div className="space-y-3">
-            {recientes.map((r) => (
-              <div
-                key={r.id}
-                className="flex items-center justify-between p-3.5 bg-slate-50 border border-line rounded-xl hover:bg-slate-100/70 transition-colors"
-              >
-                <div>
-                  <p className="text-sm font-bold text-ink">{r.ambienteNombre}</p>
-                  <p className="text-xs text-ink-muted mt-0.5">
-                    {r.fecha} | {r.horaInicio} - {r.horaFin} | Docente: {r.solicitanteNombre}
-                  </p>
-                </div>
-                <StatusBadge status={r.estado} />
+          <div className="space-y-2.5">
+            {recientes.length === 0 ? (
+              <div className="text-center py-10 text-xs text-ink-muted">
+                No hay solicitudes recientes registradas.
               </div>
-            ))}
+            ) : (
+              recientes.map((r) => (
+                <div
+                  key={r.id}
+                  className="flex items-center justify-between p-3.5 bg-canvas border border-line rounded-xl hover:bg-surface-raised transition-colors"
+                >
+                  <div className="min-w-0 pr-3">
+                    <p className="font-bold text-xs sm:text-sm text-ink truncate">
+                      {r.ambienteNombre}
+                    </p>
+                    <p className="text-2xs text-ink-muted mt-0.5">
+                      {r.fecha} | {r.horaInicio} - {r.horaFin} | Solicitado por: {r.solicitanteNombre}
+                    </p>
+                  </div>
+                  <StatusBadge status={r.estado} />
+                </div>
+              ))
+            )}
           </div>
         </div>
 
-        {/* Panel Informativo del Sistema */}
-        <div className="bg-[#00334D] text-white rounded-2xl p-6 shadow-md flex flex-col justify-between">
+        {/* Panel Informativo de Políticas */}
+        <div className="bg-[#00334D] dark:bg-[#002233] text-white rounded-2xl p-6 shadow-md flex flex-col justify-between border border-sky-950">
           <div>
             <span className="text-3xs font-extrabold uppercase tracking-widest text-sky-300">
               Políticas de Operación
@@ -149,14 +182,23 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
             </p>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-sky-800/80 text-2xs text-sky-200/90 space-y-1.5 font-medium">
-            <p>✓ Validación algorítmica sin cruce de horarios</p>
-            <p>✓ Horario de atención institucional: 07:00 a 22:00</p>
-            <p>✓ Aprobación y asignación por administración</p>
+          <div className="mt-6 pt-4 border-t border-sky-800/80 text-2xs text-sky-200/90 space-y-2 font-medium">
+            <p className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+              <span>Validación algorítmica sin cruce de horarios</span>
+            </p>
+            <p className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+              <span>Horario de atención institucional: 07:00 a 22:00</span>
+            </p>
+            <p className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+              <span>Aprobación y asignación por administración</span>
+            </p>
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

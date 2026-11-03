@@ -65,11 +65,17 @@ export function App() {
       onSelectPagina={setPaginaActiva}
     >
       {paginaActiva === 'dashboard' && (
-        <DashboardPage onNavigate={setPaginaActiva} />
+        <DashboardPage
+          onNuevaReservaClick={() => setPaginaActiva('nueva-reserva')}
+          onVerTodasClick={() => setPaginaActiva('reservas')}
+        />
       )}
 
       {paginaActiva === 'reservas' && (
-        <ReservasPage rolActual={usuario.rol} />
+        <ReservasPage
+          usuario={usuario}
+          onNuevaReservaClick={() => setPaginaActiva('nueva-reserva')}
+        />
       )}
 
       {paginaActiva === 'nueva-reserva' && (

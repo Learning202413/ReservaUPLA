@@ -1,46 +1,73 @@
 import React, { useEffect, useState } from 'react';
-import { FilterBar, StatusBadge, ConfirmModal, ModalWrapper, Button, EmptyState, FormMessage } from '../components/ui';
+import {
+  Button,
+  ActionButton,
+  FilterBar,
+  StatusBadge,
+  ConfirmModal,
+  ModalWrapper,
+  DataTable,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableHeaderCell,
+  TableCell,
+  TablePagination,
+} from '../components/ui';
+import { PageHeader } from '../components/layout/PageHeader';
+import { PageContainer } from '../components/layout/PageContainer';
 import { api } from '../services/api';
-import { Reserva } from '../types';
-import { Eye, Check, X, Ban, Calendar, MapPin, Clock } from 'lucide-react';
+import { Reserva, Usuario } from '../types';
+import {
+  PlusCircle,
+  Eye,
+  CheckCircle,
+  XCircle,
+  Calendar,
+  Clock,
+  User,
+  Building,
+} from 'lucide-react';
 
 interface ReservasPageProps {
-  rolActual: string;
+  usuario?: Usuario | null;
+  onNuevaReservaClick: () => void;
 }
 
-export const ReservasPage: React.FC<ReservasPageProps> = ({ rolActual }) => {
+export const ReservasPage: React.FC<ReservasPageProps> = ({
+  usuario,
+  onNuevaReservaClick,
+}) => {
   const [reservas, setReservas] = useState<Reserva[]>([]);
-  const [filtroEstado, setFiltroEstado] = useState<string>('todos');
-  const [busqueda, setBusqueda] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
-  const [notificacion, setNotificacion] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [busqueda, setBusqueda] = useState<string>('');
+  const [filtroEstado, setFiltroEstado] = useState<string>('todos');
+  const [paginaActual, setPaginaActual] = useState<number>(1);
+  const itemsPorPagina = 8;
 
-  // Estados de Modales
+  // Modales
   const [reservaDetalle, setReservaDetalle] = useState<Reserva | null>(null);
-  const [modalConfirm, setModalConfirm] = useState<{
-    isOpen: boolean;
+  const [modalConfirmacion, setModalConfirmacion] = useState<{
+    abierto: boolean;
+    accion: 'aprobar' | 'rechazar';
     reservaId: string;
-    nuevoEstado: string;
-    title: string;
-    subtitle: string;
-    variant: 'primary' | 'danger' | 'success';
+    ambienteNombre: string;
   }>({
-    isOpen: false,
+    abierto: false,
+    accion: 'aprobar',
     reservaId: '',
-    nuevoEstado: '',
-    title: '',
-    subtitle: '',
-    variant: 'primary',
+    ambienteNombre: '',
   });
-  const [procesandoAccion, setProcesandoAccion] = useState(false);
+
+  const [procesando, setProcesando] = useState<boolean>(false);
 
   const cargarReservas = async () => {
     setLoading(true);
     try {
       const data = await api.getReservas();
       setReservas(data);
-    } catch {
-      setNotificacion({ type: 'error', message: 'No se pudo conectar con el servicio de reservas.' });
+    } catch (err) {
+      console.error('Error al cargar reservas:', err);
     } finally {
       setLoading(false);
     }
@@ -50,288 +77,287 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({ rolActual }) => {
     cargarReservas();
   }, []);
 
-  const handleAbrirAccion = (reserva: Reserva, accion: 'Aprobar' | 'Rechazar' | 'Cancelar') => {
-    // RN-06: Inmutabilidad de reservas rechazadas
-    if (reserva.estado === 'Rechazada') {
-      setNotificacion({
-        type: 'error',
-        message: 'RN-06: Esta reserva ya fue Rechazada y el reglamento estipula que es inmutable.',
-      });
-      return;
-    }
+  const esAdmin = usuario?.rol === 'Administrador';
 
-    // RN-05: Solo el administrador puede aprobar o rechazar
-    if ((accion === 'Aprobar' || accion === 'Rechazar') && rolActual !== 'Administrador') {
-      setNotificacion({
-        type: 'error',
-        message: `RN-05: Su rol actual es '${rolActual}'. Solo el Administrador tiene autorización para aprobar o rechazar solicitudes.`,
-      });
-      return;
-    }
-
-    setModalConfirm({
-      isOpen: true,
-      reservaId: reserva.id,
-      nuevoEstado: accion === 'Aprobar' ? 'Aprobada' : accion === 'Rechazar' ? 'Rechazada' : 'Cancelada',
-      title: `${accion} Solicitud de Reserva`,
-      subtitle: `¿Confirma cambiar el estado de la reserva para el ambiente "${reserva.ambienteNombre}" el ${reserva.fecha} (${reserva.horaInicio} a ${reserva.horaFin})?`,
-      variant: accion === 'Aprobar' ? 'success' : accion === 'Rechazar' ? 'danger' : 'primary',
-    });
-  };
-
-  const handleConfirmarAccion = async () => {
-    setProcesandoAccion(true);
-    try {
-      await api.cambiarEstadoReserva(modalConfirm.reservaId, modalConfirm.nuevoEstado, rolActual);
-      setNotificacion({
-        type: 'success',
-        message: `La reserva fue actualizada al estado '${modalConfirm.nuevoEstado}' correctamente.`,
-      });
-      setModalConfirm((prev) => ({ ...prev, isOpen: false }));
-      await cargarReservas();
-    } catch (err: any) {
-      setNotificacion({
-        type: 'error',
-        message: err.message || 'Error al procesar la actualización de estado.',
-      });
-      setModalConfirm((prev) => ({ ...prev, isOpen: false }));
-    } finally {
-      setProcesandoAccion(false);
-    }
-  };
-
+  // Filtrado
   const reservasFiltradas = reservas.filter((r) => {
-    const coincideEstado = filtroEstado === 'todos' || r.estado === filtroEstado;
-    const coincideBusqueda =
-      busqueda.trim() === '' ||
+    const matchBusqueda =
       r.ambienteNombre.toLowerCase().includes(busqueda.toLowerCase()) ||
       r.solicitanteNombre.toLowerCase().includes(busqueda.toLowerCase()) ||
       r.motivo.toLowerCase().includes(busqueda.toLowerCase());
-    return coincideEstado && coincideBusqueda;
+
+    const matchEstado =
+      filtroEstado === 'todos' ||
+      r.estado.toLowerCase() === filtroEstado.toLowerCase();
+
+    return matchBusqueda && matchEstado;
   });
 
+  // Paginación
+  const totalItems = reservasFiltradas.length;
+  const totalPages = Math.ceil(totalItems / itemsPorPagina);
+  const reservasPaginadas = reservasFiltradas.slice(
+    (paginaActual - 1) * itemsPorPagina,
+    paginaActual * itemsPorPagina
+  );
+
+  const handleAbrirConfirmacion = (id: string, nombre: string, accion: 'aprobar' | 'rechazar') => {
+    setModalConfirmacion({
+      abierto: true,
+      accion,
+      reservaId: id,
+      ambienteNombre: nombre,
+    });
+  };
+
+  const handleEjecutarAccion = async () => {
+    setProcesando(true);
+    try {
+      const nuevoEstado = modalConfirmacion.accion === 'aprobar' ? 'Aprobada' : 'Rechazada';
+      await api.cambiarEstadoReserva(modalConfirmacion.reservaId, nuevoEstado);
+      await cargarReservas();
+      setModalConfirmacion((prev) => ({ ...prev, abierto: false }));
+    } catch (err) {
+      console.error('Error al procesar reserva:', err);
+    } finally {
+      setProcesando(false);
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Título */}
-      <div>
-        <h2 className="text-xl sm:text-2xl font-black text-ink tracking-tight">
-          Control y Gestión de Reservas (RF-05, RF-06, RF-07)
-        </h2>
-        <p className="text-xs sm:text-sm text-ink-muted mt-0.5">
-          Listado integral, auditoría de motivos y máquina de estados con permisos institucionales.
-        </p>
-      </div>
+    <PageContainer>
+      {/* Cabecera Estandarizada con PageHeader */}
+      <PageHeader
+        title="Control de Reservas de Ambientes"
+        subtitle="Monitoreo de solicitudes, dictamen administrativo y asignación horaria."
+        count={reservasFiltradas.length}
+        countLabel="solicitudes"
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            icon={<PlusCircle className="w-4 h-4" />}
+            onClick={onNuevaReservaClick}
+          >
+            Nueva Reserva
+          </Button>
+        }
+      />
 
-      {notificacion && (
-        <FormMessage
-          type={notificacion.type}
-          message={notificacion.message}
-        />
-      )}
-
-      {/* Barra de Búsqueda y Filtros Reutilizable (FilterBar) */}
+      {/* Barra de Filtros y Búsqueda */}
       <FilterBar
         searchValue={busqueda}
-        onSearchChange={setBusqueda}
-        searchPlaceholder="Buscar por ambiente, docente o motivo..."
+        onSearchChange={(val) => {
+          setBusqueda(val);
+          setPaginaActual(1);
+        }}
+        searchPlaceholder="Buscar por ambiente, solicitante o motivo..."
       >
-        <div className="flex items-center gap-1.5 overflow-x-auto">
-          {['todos', 'Pendiente', 'Aprobada', 'Rechazada', 'Cancelada'].map((estado) => (
-            <button
-              key={estado}
-              type="button"
-              onClick={() => setFiltroEstado(estado)}
-              className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer shrink-0 ${
-                filtroEstado === estado
-                  ? 'bg-primary text-white shadow-xs'
-                  : 'bg-slate-100 text-ink-muted hover:bg-slate-200'
-              }`}
-            >
-              {estado === 'todos' ? 'Todos' : estado}
-            </button>
-          ))}
+        <div className="flex items-center gap-1.5">
+          {['todos', 'Pendiente', 'Aprobada', 'Rechazada'].map((estado) => {
+            const isSelected = filtroEstado === estado;
+            return (
+              <button
+                key={estado}
+                type="button"
+                onClick={() => {
+                  setFiltroEstado(estado);
+                  setPaginaActual(1);
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors cursor-pointer select-none ${
+                  isSelected
+                    ? 'bg-primary text-white border-primary shadow-xs'
+                    : 'bg-surface hover:bg-slate-100 dark:hover:bg-slate-800 text-ink border-line'
+                }`}
+              >
+                {estado === 'todos' ? 'Todas' : estado}
+              </button>
+            );
+          })}
         </div>
       </FilterBar>
 
-      {/* Tabla de Datos / Listado */}
-      {loading ? (
-        <div className="p-16 text-center text-slate-400 bg-surface rounded-2xl border border-line">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent mb-3" />
-          <p className="text-sm font-semibold text-ink">Cargando registros de reservas...</p>
-        </div>
-      ) : reservasFiltradas.length === 0 ? (
-        <EmptyState
-          icon={Calendar}
-          title="No se encontraron reservas"
-          description="No existen solicitudes registradas que coincidan con los criterios de búsqueda o filtro seleccionados."
-        />
-      ) : (
-        <div className="w-full overflow-hidden border border-line rounded-2xl bg-surface shadow-2xs">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse font-sans">
-              <thead>
-                <tr className="bg-slate-50 border-b border-line text-xs font-bold text-ink-muted uppercase tracking-wider">
-                  <th className="py-3.5 px-4">Ambiente UPLA</th>
-                  <th className="py-3.5 px-4">Fecha y Horario</th>
-                  <th className="py-3.5 px-4">Solicitante</th>
-                  <th className="py-3.5 px-4">Estado</th>
-                  <th className="py-3.5 px-4 text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line text-sm">
-                {reservasFiltradas.map((r, idx) => (
-                  <tr
-                    key={r.id}
-                    className={`hover:bg-sky-50/40 transition-colors ${
-                      idx % 2 === 0 ? 'bg-surface' : 'bg-slate-50/30'
-                    }`}
-                  >
-                    <td className="py-3.5 px-4">
-                      <p className="font-bold text-ink">{r.ambienteNombre}</p>
-                      <p className="text-2xs text-ink-muted flex items-center gap-1 mt-0.5">
-                        <MapPin className="w-3 h-3 text-slate-400" />
-                        <span>{r.ambienteUbicacion}</span>
-                      </p>
-                    </td>
+      {/* Tabla Estandarizada con DataTable */}
+      <DataTable
+        loading={loading}
+        isEmpty={reservasFiltradas.length === 0}
+        emptyTitle="No se encontraron solicitudes"
+        emptyMessage="No hay reservas que coincidan con los criterios de búsqueda o filtros seleccionados."
+        emptyActionLabel="Registrar nueva reserva"
+        onEmptyAction={onNuevaReservaClick}
+      >
+        <TableHead>
+          <tr>
+            <TableHeaderCell>Ambiente</TableHeaderCell>
+            <TableHeaderCell>Solicitante</TableHeaderCell>
+            <TableHeaderCell>Fecha</TableHeaderCell>
+            <TableHeaderCell>Horario</TableHeaderCell>
+            <TableHeaderCell>Estado</TableHeaderCell>
+            <TableHeaderCell align="right">Acciones</TableHeaderCell>
+          </tr>
+        </TableHead>
 
-                    <td className="py-3.5 px-4">
-                      <p className="font-semibold text-ink">{r.fecha}</p>
-                      <p className="text-xs text-primary font-bold flex items-center gap-1 mt-0.5">
-                        <Clock className="w-3 h-3" />
-                        <span>{r.horaInicio} - {r.horaFin}</span>
-                      </p>
-                    </td>
+        <TableBody>
+          {reservasPaginadas.map((r) => (
+            <TableRow key={r.id}>
+              <TableCell>
+                <div className="flex items-center gap-2 font-bold text-ink">
+                  <Building className="w-4 h-4 text-primary dark:text-sky-400 shrink-0" />
+                  <span>{r.ambienteNombre}</span>
+                </div>
+              </TableCell>
 
-                    <td className="py-3.5 px-4">
-                      <p className="font-semibold text-ink text-xs">{r.solicitanteNombre}</p>
-                      <p className="text-2xs text-ink-muted">{r.solicitanteCorreo}</p>
-                    </td>
+              <TableCell>
+                <div className="flex items-center gap-2 text-ink-muted">
+                  <User className="w-3.5 h-3.5 text-ink-faint shrink-0" />
+                  <span>{r.solicitanteNombre}</span>
+                </div>
+              </TableCell>
 
-                    <td className="py-3.5 px-4">
-                      <StatusBadge status={r.estado} />
-                    </td>
+              <TableCell>
+                <div className="flex items-center gap-1.5 text-ink font-medium">
+                  <Calendar className="w-3.5 h-3.5 text-ink-muted shrink-0" />
+                  <span>{r.fecha}</span>
+                </div>
+              </TableCell>
 
-                    <td className="py-3.5 px-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          type="button"
-                          onClick={() => setReservaDetalle(r)}
-                          className="p-1.5 text-slate-500 hover:text-primary hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-                          title="Consultar detalle (RF-06)"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
+              <TableCell>
+                <div className="flex items-center gap-1.5 text-ink font-semibold">
+                  <Clock className="w-3.5 h-3.5 text-ink-muted shrink-0" />
+                  <span>
+                    {r.horaInicio} - {r.horaFin}
+                  </span>
+                </div>
+              </TableCell>
 
-                        {r.estado === 'Pendiente' && (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => handleAbrirAccion(r, 'Aprobar')}
-                              className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
-                              title="Aprobar reserva (RN-05)"
-                            >
-                              <Check className="w-4 h-4" />
-                            </button>
+              <TableCell>
+                <StatusBadge status={r.estado} />
+              </TableCell>
 
-                            <button
-                              type="button"
-                              onClick={() => handleAbrirAccion(r, 'Rechazar')}
-                              className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                              title="Rechazar reserva (RN-05)"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
+              <TableCell align="right">
+                <div className="flex items-center justify-end gap-1.5">
+                  <ActionButton
+                    size="sm"
+                    variant="ghost"
+                    icon={Eye}
+                    onClick={() => setReservaDetalle(r)}
+                    aria-label="Ver detalle de la solicitud"
+                    title="Ver detalle de la solicitud"
+                  />
 
-                            <button
-                              type="button"
-                              onClick={() => handleAbrirAccion(r, 'Cancelar')}
-                              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-                              title="Cancelar mi solicitud"
-                            >
-                              <Ban className="w-4 h-4" />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+                  {esAdmin && r.estado === 'Pendiente' && (
+                    <>
+                      <ActionButton
+                        size="sm"
+                        variant="secondary"
+                        icon={CheckCircle}
+                        onClick={() => handleAbrirConfirmacion(r.id, r.ambienteNombre, 'aprobar')}
+                        className="text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/60"
+                        title="Aprobar solicitud de reserva"
+                      >
+                        Aprobar
+                      </ActionButton>
 
-      {/* Modal de Detalle usando ModalWrapper de GirasolesRes */}
-      {reservaDetalle && (
-        <ModalWrapper
-          isOpen={Boolean(reservaDetalle)}
-          onClose={() => setReservaDetalle(null)}
-          title="Ficha Detallada de la Reserva"
-          subtitle={`Código de trámite: ${reservaDetalle.id.substring(0, 8)}`}
-          maxWidth="lg"
-          footer={
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setReservaDetalle(null)}
-            >
-              Cerrar Ficha
-            </Button>
-          }
-        >
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 bg-slate-50 rounded-xl border border-line">
-                <span className="text-ink-muted font-semibold block">Ambiente:</span>
-                <span className="font-bold text-ink mt-0.5 block">{reservaDetalle.ambienteNombre}</span>
-                <span className="text-3xs text-ink-muted">{reservaDetalle.ambienteUbicacion}</span>
+                      <ActionButton
+                        size="sm"
+                        variant="danger"
+                        icon={XCircle}
+                        onClick={() => handleAbrirConfirmacion(r.id, r.ambienteNombre, 'rechazar')}
+                        title="Rechazar solicitud de reserva"
+                      >
+                        Rechazar
+                      </ActionButton>
+                    </>
+                  )}
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </DataTable>
+
+      {/* Paginación Estandarizada */}
+      <TablePagination
+        currentPage={paginaActual}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        itemsPerPage={itemsPorPagina}
+        entityName="solicitudes"
+        onPageChange={(pag) => setPaginaActual(pag)}
+      />
+
+      {/* Modal de Detalle con ModalWrapper */}
+      <ModalWrapper
+        isOpen={reservaDetalle !== null}
+        onClose={() => setReservaDetalle(null)}
+        title="Ficha Oficial de Reserva"
+        subtitle={`Código: ${reservaDetalle?.id.slice(0, 8)}`}
+        icon={Building}
+        maxWidth="lg"
+      >
+        {reservaDetalle && (
+          <div className="space-y-4 text-left">
+            <div className="p-4 bg-canvas rounded-2xl border border-line space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-3xs font-extrabold uppercase tracking-widest text-ink-muted">
+                    Espacio Físico Solicitado
+                  </span>
+                  <h4 className="text-base font-black text-ink">
+                    {reservaDetalle.ambienteNombre}
+                  </h4>
+                </div>
+                <StatusBadge status={reservaDetalle.estado} />
               </div>
 
-              <div className="p-3 bg-slate-50 rounded-xl border border-line">
-                <span className="text-ink-muted font-semibold block">Fecha y Horario:</span>
-                <span className="font-bold text-primary mt-0.5 block">{reservaDetalle.fecha}</span>
-                <span className="text-2xs font-semibold text-ink">{reservaDetalle.horaInicio} a {reservaDetalle.horaFin}</span>
-              </div>
-
-              <div className="p-3 bg-slate-50 rounded-xl border border-line">
-                <span className="text-ink-muted font-semibold block">Docente Solicitante:</span>
-                <span className="font-bold text-ink mt-0.5 block">{reservaDetalle.solicitanteNombre}</span>
-                <span className="text-3xs text-ink-muted">{reservaDetalle.solicitanteCorreo}</span>
-              </div>
-
-              <div className="p-3 bg-slate-50 rounded-xl border border-line">
-                <span className="text-ink-muted font-semibold block">Estado Actual:</span>
-                <div className="mt-1">
-                  <StatusBadge status={reservaDetalle.estado} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-2 border-t border-line-soft">
+                <div className="flex items-center gap-2 text-ink-muted">
+                  <User className="w-4 h-4 text-primary shrink-0" />
+                  <span><strong>Docente / Solicitante:</strong> {reservaDetalle.solicitanteNombre}</span>
+                </div>
+                <div className="flex items-center gap-2 text-ink-muted">
+                  <Calendar className="w-4 h-4 text-primary shrink-0" />
+                  <span><strong>Fecha Programada:</strong> {reservaDetalle.fecha}</span>
+                </div>
+                <div className="flex items-center gap-2 text-ink-muted">
+                  <Clock className="w-4 h-4 text-primary shrink-0" />
+                  <span><strong>Horario Asignado:</strong> {reservaDetalle.horaInicio} a {reservaDetalle.horaFin}</span>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 bg-sky-50/70 border border-sky-100 rounded-xl">
-              <span className="text-xs font-bold text-primary block">
-                Motivo Académico / Institucional Registrado:
+            <div>
+              <span className="text-3xs font-extrabold uppercase tracking-widest text-ink-muted block mb-1">
+                Justificación Académica e Institucional:
               </span>
-              <p className="text-xs text-ink mt-1.5 leading-relaxed">
+              <p className="p-3.5 bg-canvas rounded-xl border border-line text-xs sm:text-sm text-ink leading-relaxed">
                 {reservaDetalle.motivo}
               </p>
             </div>
           </div>
-        </ModalWrapper>
-      )}
+        )}
+      </ModalWrapper>
 
-      {/* Modal de Confirmación usando ConfirmModal de GirasolesRes */}
+      {/* Modal de Confirmación para Aprobar / Rechazar */}
       <ConfirmModal
-        isOpen={modalConfirm.isOpen}
-        onClose={() => setModalConfirm((prev) => ({ ...prev, isOpen: false }))}
-        onConfirm={handleConfirmarAccion}
-        loading={procesandoAccion}
-        title={modalConfirm.title}
-        subtitle={modalConfirm.subtitle}
-        confirmVariant={modalConfirm.variant}
-        confirmText="Confirmar Acción"
+        isOpen={modalConfirmacion.abierto}
+        onClose={() => setModalConfirmacion((prev) => ({ ...prev, abierto: false }))}
+        onConfirm={handleEjecutarAccion}
+        loading={procesando}
+        title={
+          modalConfirmacion.accion === 'aprobar'
+            ? '¿Aprobar solicitud de reserva?'
+            : '¿Rechazar solicitud de reserva?'
+        }
+        subtitle={`Ambiente: ${modalConfirmacion.ambienteNombre}. Esta acción notificará al solicitante y actualizará la disponibilidad horaria institucional.`}
+        confirmText={
+          modalConfirmacion.accion === 'aprobar'
+            ? 'Aprobar Reserva'
+            : 'Rechazar Reserva'
+        }
+        confirmVariant={modalConfirmacion.accion === 'aprobar' ? 'primary' : 'danger'}
       />
-    </div>
+    </PageContainer>
   );
 };
 
