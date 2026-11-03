@@ -25,6 +25,25 @@ public class CrearUsuarioDto
     public string Rol { get; set; } = "Solicitante";
 }
 
+public class LoginDto
+{
+    [Required(ErrorMessage = "El correo institucional es obligatorio")]
+    [EmailAddress(ErrorMessage = "El formato de correo no es válido")]
+    public string Correo { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "La contraseña es obligatoria")]
+    public string Clave { get; set; } = string.Empty;
+}
+
+public class LoginResponseDto
+{
+    public Guid Id { get; set; }
+    public string NombreCompleto { get; set; } = string.Empty;
+    public string Correo { get; set; } = string.Empty;
+    public string Rol { get; set; } = string.Empty;
+    public string Token { get; set; } = string.Empty;
+}
+
 public class AmbienteDto
 {
     public Guid Id { get; set; }
@@ -94,10 +113,10 @@ public class CrearReservaDto
 public class CambiarEstadoReservaDto
 {
     [Required(ErrorMessage = "El nuevo estado es obligatorio")]
-    public string NuevoEstado { get; set; } = string.Empty; // Aprobada, Rechazada, Cancelada
+    public string NuevoEstado { get; set; } = string.Empty;
 
     public string? MotivoRechazo { get; set; }
-    public string RolEjecutor { get; set; } = "Administrador"; // Para validar RN-05
+    public string RolEjecutor { get; set; } = "Administrador";
 }
 
 public class DashboardKpisDto

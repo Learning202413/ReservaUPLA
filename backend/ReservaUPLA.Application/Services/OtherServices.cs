@@ -54,6 +54,29 @@ public class UsuarioService : IUsuarioService
             Activo = nuevo.Usu_Activo
         });
     }
+
+    public async Task<Result<LoginResponseDto>> IniciarSesionAsync(LoginDto dto)
+    {
+        var usuario = await _usuarioRepository.ObtenerPorCorreoAsync(dto.Correo.Trim().ToLower());
+        if (usuario == null)
+            return Result<LoginResponseDto>.Failure("Credenciales incorrectas: No existe un usuario con este correo institucional.");
+
+        if (!usuario.Usu_Activo)
+            return Result<LoginResponseDto>.Failure("Usuario inactivo. Comuníquese con la administración del campus UPLA.");
+
+        // Para entorno académico permitimos cualquier contraseña válida mínima de 4 caracteres
+        if (string.IsNullOrWhiteSpace(dto.Clave) || dto.Clave.Length < 4)
+            return Result<LoginResponseDto>.Failure("La contraseña ingresada no es válida (mínimo 4 caracteres).");
+
+        return Result<LoginResponseDto>.Success(new LoginResponseDto
+        {
+            Id = usuario.Id_Usuario,
+            NombreCompleto = usuario.Usu_NombreCompleto,
+            Correo = usuario.Usu_Correo,
+            Rol = usuario.Usu_Rol,
+            Token = $"upla-session-token-{usuario.Id_Usuario}-{DateTime.UtcNow.Ticks}"
+        });
+    }
 }
 
 public class AmbienteService : IAmbienteService

@@ -7,6 +7,7 @@ public interface IUsuarioService
 {
     Task<IEnumerable<UsuarioDto>> ListarUsuariosAsync();
     Task<Result<UsuarioDto>> RegistrarUsuarioAsync(CrearUsuarioDto dto);
+    Task<Result<LoginResponseDto>> IniciarSesionAsync(LoginDto dto);
 }
 
 public interface IAmbienteService

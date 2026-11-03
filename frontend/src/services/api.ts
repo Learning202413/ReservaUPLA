@@ -230,4 +230,36 @@ export const api = {
     localUsuarios.push(nuevo);
     return nuevo;
   },
+
+  async login(correo: string, clave: string): Promise<Usuario> {
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo, clave }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return {
+          id: data.id,
+          nombreCompleto: data.nombreCompleto,
+          correo: data.correo,
+          rol: data.rol,
+          activo: true,
+        };
+      } else {
+        const err = await res.json();
+        throw new Error(err.error || 'Credenciales inválidas.');
+      }
+    } catch (e: any) {
+      if (e.message && e.message !== 'Failed to fetch') throw e;
+    }
+
+    // Fallback local
+    const u = localUsuarios.find((user) => user.correo.toLowerCase() === correo.trim().toLowerCase());
+    if (!u) {
+      throw new Error('Credenciales incorrectas: No existe usuario con este correo.');
+    }
+    return u;
+  },
 };
