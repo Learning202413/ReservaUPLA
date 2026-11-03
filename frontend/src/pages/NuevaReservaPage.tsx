@@ -233,12 +233,12 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ onSuccess })
             />
           </div>
 
-          {/* Botón de Comprobación Preventiva (Nielsen #5) */}
+          {/* Comprobación Preventiva de Disponibilidad */}
           <div className="flex items-center justify-between p-3.5 bg-slate-50 border border-line rounded-xl">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-primary" />
               <span className="text-xs font-bold text-ink">
-                Verificación algorítmica previa (RF-04):
+                Comprobación de Disponibilidad:
               </span>
             </div>
 
@@ -296,7 +296,7 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ onSuccess })
           </div>
         </form>
 
-        {/* Ficha Técnica Lateral del Ambiente (Nielsen #6: Reconocimiento antes que Recuerdo) */}
+        {/* Ficha Técnica Lateral del Ambiente */}
         <div>
           {ambienteSeleccionado ? (
             <div className="bg-surface border border-line-strong rounded-2xl p-5 shadow-2xs space-y-3.5">

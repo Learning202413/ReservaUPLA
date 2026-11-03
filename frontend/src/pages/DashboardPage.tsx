@@ -135,24 +135,24 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Panel de Cumplimiento de Principios de Diseño */}
+        {/* Panel Informativo del Sistema */}
         <div className="bg-[#00334D] text-white rounded-2xl p-6 shadow-md flex flex-col justify-between">
           <div>
             <span className="text-3xs font-extrabold uppercase tracking-widest text-sky-300">
-              Heurísticas de Usabilidad
+              Políticas de Operación
             </span>
             <h3 className="text-lg font-black mt-1 text-white">
-              Nielsen & Shneiderman
+              Reglamento de Ambientes
             </h3>
             <p className="text-xs text-sky-100/90 mt-2.5 leading-relaxed">
-              Cumplimiento de la <strong>Heurística #1 (Visibilidad del estado)</strong> y <strong>Regla #3 de Shneiderman</strong>: retroalimentación visual directa de la disponibilidad institucional.
+              Las solicitudes registradas son procesadas bajo validación en tiempo real para garantizar disponibilidad continua y trazabilidad oficial de la infraestructura institucional.
             </p>
           </div>
 
           <div className="mt-6 pt-4 border-t border-sky-800/80 text-2xs text-sky-200/90 space-y-1.5 font-medium">
-            <p>✓ Anti-solapamiento horario algorítmico (RN-01)</p>
-            <p>✓ Rango permitido 07:00 a 22:00 (RN-04)</p>
-            <p>✓ Decisiones restringidas a Administrador (RN-05)</p>
+            <p>✓ Validación algorítmica sin cruce de horarios</p>
+            <p>✓ Horario de atención institucional: 07:00 a 22:00</p>
+            <p>✓ Aprobación y asignación por administración</p>
           </div>
         </div>
       </div>

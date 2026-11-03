@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Sidebar, PaginaActiva } from '../components/layout/Sidebar';
 import { Header } from '../components/layout/Header';
 import { Usuario } from '../types';
-import { useHandedness } from '../hooks/useHandedness';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -22,7 +21,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   onSelectPagina,
 }) => {
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
-  const { isLeftHanded } = useHandedness();
 
   const titulosPorPagina: Record<PaginaActiva, { seccion: string; pagina: string }> = {
     dashboard: { seccion: 'Métricas', pagina: 'Dashboard de Indicadores' },
@@ -38,11 +36,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   };
 
   return (
-    <div
-      className={`flex h-screen overflow-hidden bg-canvas ${
-        isLeftHanded ? 'flex-row-reverse' : ''
-      }`}
-    >
+    <div className="flex h-screen overflow-hidden bg-canvas">
       <Sidebar
         usuario={usuario}
         paginaActiva={paginaActiva}

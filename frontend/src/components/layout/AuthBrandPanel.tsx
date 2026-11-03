@@ -37,11 +37,11 @@ export const AuthBrandPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* Bloque central: Propuesta de Valor y Principios del Solucionario */}
+      {/* Bloque central: Propuesta de Valor */}
       <div className="relative z-10 max-w-xl my-auto py-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 border border-sky-400/30 text-sky-200 text-xs font-semibold mb-4 backdrop-blur-xs">
           <Award className="w-3.5 h-3.5" />
-          <span>Construcción de Software | Semanas 01 - 09</span>
+          <span>Portal Oficial de Ambientes Universitarios</span>
         </div>
 
         <h1 className="text-3xl xl:text-4xl font-black text-white tracking-tight leading-tight">
@@ -52,21 +52,21 @@ export const AuthBrandPanel: React.FC = () => {
           Plataforma oficial para la administración de laboratorios de cómputo, auditorios y salas institucionales con validación algorítmica y cero conflictos de horario.
         </p>
 
-        {/* Pilares Técnicos */}
+        {/* Pilares Funcionales */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs text-sky-100">
           <div className="flex items-center gap-3 p-3 rounded-xl bg-white/10 backdrop-blur-xs border border-white/10">
             <ShieldCheck className="w-5 h-5 text-sky-300 shrink-0" />
             <div>
-              <p className="font-bold text-white">Anti-Solapamiento (RN-01)</p>
-              <p className="text-2xs text-sky-200">Algoritmo matemático estricto</p>
+              <p className="font-bold text-white">Disponibilidad Inmediata</p>
+              <p className="text-2xs text-sky-200">Validación sin cruces de horario</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 p-3 rounded-xl bg-white/10 backdrop-blur-xs border border-white/10">
             <Clock className="w-5 h-5 text-sky-300 shrink-0" />
             <div>
-              <p className="font-bold text-white">Horario Oficial (RN-04)</p>
-              <p className="text-2xs text-sky-200">Operatividad 07:00 a 22:00</p>
+              <p className="font-bold text-white">Horario Institucional</p>
+              <p className="text-2xs text-sky-200">Turnos de 07:00 a 22:00 horas</p>
             </div>
           </div>
 
@@ -74,24 +74,24 @@ export const AuthBrandPanel: React.FC = () => {
             <Building2 className="w-5 h-5 text-sky-300 shrink-0" />
             <div>
               <p className="font-bold text-white">Aforo y Capacidad</p>
-              <p className="text-2xs text-sky-200">Control de aforo por ambiente</p>
+              <p className="text-2xs text-sky-200">Control óptimo por ambiente</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 p-3 rounded-xl bg-white/10 backdrop-blur-xs border border-white/10">
             <CalendarCheck className="w-5 h-5 text-sky-300 shrink-0" />
             <div>
-              <p className="font-bold text-white">Trazabilidad Total</p>
-              <p className="text-2xs text-sky-200">Clean Architecture .NET 8</p>
+              <p className="font-bold text-white">Trazabilidad Oficial</p>
+              <p className="text-2xs text-sky-200">Registro y auditoría de solicitudes</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Pie inferior con acreditación */}
+      {/* Pie inferior */}
       <div className="relative z-10 pt-4 border-t border-sky-400/20 flex items-center justify-between text-2xs text-sky-300/80">
         <span>UPLA | Licenciada por SUNEDU</span>
-        <span>Heurísticas de Nielsen & Shneiderman</span>
+        <span>Sistema Integrado de Gestión Institucional</span>
       </div>
     </aside>
   );

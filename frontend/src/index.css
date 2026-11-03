@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@custom-variant left-handed (&:where(.left-handed, .left-handed *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -11,6 +11,7 @@
   --color-brand-surface: #004C73;
   --color-canvas: #F8FAFC;
   --color-surface: #FFFFFF;
+  --color-surface-raised: #FFFFFF;
 
   --color-ink: #0F172A;
   --color-ink-fill: #0F172A;
@@ -53,6 +54,33 @@
   --color-alert-error-icon: #DC2626;
 }
 
+@media screen {
+  html.dark {
+    color-scheme: dark;
+    --color-canvas: #090E17;
+    --color-surface: #101927;
+    --color-surface-raised: #1A2638;
+    --color-brand-dark: #001A29;
+    --color-brand-surface: #00283D;
+    --color-sidebar: #060B12;
+    --color-ink: #F8FAFC;
+    --color-ink-fill: #F8FAFC;
+    --color-ink-muted: #94A3B8;
+    --color-ink-faint: #64748B;
+    --color-line: #1E293B;
+    --color-line-soft: #162030;
+    --color-line-strong: #334155;
+    --color-demo-border: #334155;
+    --color-demo-divider: #1E293B;
+    --color-chip-accent-bg: #162030;
+    --color-chip-accent-border: #334155;
+    --color-alert-error-bg: #271010;
+    --color-alert-error-text: #F87171;
+    --color-alert-error-border: #5C2626;
+    --color-alert-error-icon: #F87171;
+  }
+}
+
 @layer base {
   body {
     background-color: var(--color-canvas);
@@ -63,7 +91,7 @@
   }
 }
 
-/* Estilos Estándar de Formulario (GirasolesRes Standard) */
+/* Estilos Estándar de Formulario */
 .form-label-standard {
   display: block;
   font-size: 0.75rem;
@@ -100,10 +128,10 @@
 }
 
 .form-input-error {
-  border-color: var(--color-danger) !important;
-  background-color: #FFF1F2/20;
+  border-color: var(--color-danger);
 }
 
 .form-input-error:focus {
-  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15) !important;
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
 }

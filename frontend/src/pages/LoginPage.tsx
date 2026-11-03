@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Lock, Mail, AlertTriangle, Hand } from 'lucide-react';
+import { Lock, Mail, AlertTriangle } from 'lucide-react';
 import { InputField, Button, FormMessage } from '../components/ui';
 import { LoginDemoProfiles } from '../components/usuarios/LoginDemoProfiles';
+import { ThemeToggle } from '../components/layout/ThemeToggle';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { api } from '../services/api';
-import { useHandedness } from '../hooks/useHandedness';
 import { Usuario } from '../types';
 
 interface LoginPageProps {
@@ -27,7 +27,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess, initialMessage 
   const [capsLockActivo, setCapsLockActivo] = useState(false);
 
   const correoRef = useRef<HTMLInputElement>(null);
-  const { isLeftHanded, toggleHandedness } = useHandedness();
 
   useEffect(() => {
     correoRef.current?.focus();
@@ -103,42 +102,45 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess, initialMessage 
 
   return (
     <AuthLayout>
-      <div className="w-full text-left">
-        {/* Cabecera del formulario */}
-        <div className="mb-6">
-          <span className="text-3xs font-extrabold uppercase tracking-widest text-primary bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200">
-            Portal Institucional
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-ink tracking-tight mt-2">
-            Iniciar Sesión
-          </h2>
-          <p className="text-xs sm:text-sm text-ink-muted mt-1 leading-relaxed">
-            Ingrese sus credenciales oficiales para gestionar o solicitar ambientes.
-          </p>
+      <div className="w-full text-left max-w-md mx-auto">
+        {/* Cabecera del formulario con botón de tema */}
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <span className="text-3xs font-extrabold uppercase tracking-widest text-primary bg-sky-50 dark:bg-sky-950/50 px-2 py-0.5 rounded-md border border-sky-200 dark:border-sky-800">
+              Portal Institucional
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-ink tracking-tight mt-1.5">
+              Iniciar Sesión
+            </h2>
+            <p className="text-xs sm:text-sm text-ink-muted mt-1 leading-relaxed">
+              Ingrese sus credenciales oficiales para gestionar o solicitar ambientes.
+            </p>
+          </div>
+          <ThemeToggle className="shrink-0" />
         </div>
 
-        {/* Mensaje Contextual de Error / Notificación (FormMessage) */}
+        {/* Mensaje Contextual de Error / Notificación */}
         {message && (
           <FormMessage
             type={messageType}
             message={message}
-            className="mb-4"
+            className="mb-3"
           />
         )}
 
-        {/* Alerta Accesible de Bloq Mayús (Heurística de Nielsen 5: Prevención de errores) */}
+        {/* Alerta de Bloq Mayús */}
         {capsLockActivo && (
           <div
             role="alert"
-            className="p-2.5 mb-4 rounded-xl bg-amber-50 border border-amber-300 text-amber-800 text-xs flex items-center gap-2 font-medium"
+            className="p-2.5 mb-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-200 text-xs flex items-center gap-2 font-medium"
           >
-            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+            <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
             <span>Bloq Mayús está activado. Verifique su contraseña.</span>
           </div>
         )}
 
         {/* Formulario */}
-        <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
+        <form onSubmit={handleSubmit} noValidate className="space-y-1">
           <InputField
             ref={correoRef}
             label="Correo Institucional UPLA"
@@ -148,7 +150,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess, initialMessage 
             onChange={handleChange}
             placeholder="ejemplo@upla.edu.pe"
             error={errors.correo}
-            leftIcon={<Mail className="w-4 h-4" />}
+            leftIcon={<Mail className="w-4 h-4 text-ink-muted" />}
             required
             autoComplete="username"
           />
@@ -162,7 +164,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess, initialMessage 
             onKeyDown={handleKeyDown}
             placeholder="••••••••"
             error={errors.contrasena}
-            leftIcon={<Lock className="w-4 h-4" />}
+            leftIcon={<Lock className="w-4 h-4 text-ink-muted" />}
             required
             autoComplete="current-password"
           />
@@ -181,22 +183,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess, initialMessage 
           </div>
         </form>
 
-        {/* Accesos Demo para Evaluación (LoginDemoProfiles) */}
+        {/* Accesos Demo */}
         <LoginDemoProfiles onSelectDemo={handleSelectDemo} />
 
-        {/* Barra inferior: Alternar Ergonomía Zurdos/Diestros (useHandedness de GirasolesRes) */}
-        <div className="mt-6 pt-4 border-t border-line flex items-center justify-between text-2xs text-ink-muted">
-          <button
-            type="button"
-            onClick={() => toggleHandedness()}
-            className="flex items-center gap-1.5 hover:text-ink transition-colors cursor-pointer text-slate-500"
-            title="Cambiar orientación para zurdos o diestros"
-          >
-            <Hand className="w-3.5 h-3.5" />
-            <span>Modo: {isLeftHanded ? 'Zurdo' : 'Diestro'}</span>
-          </button>
-
-          <span className="text-slate-400">ReservaUPLA v1.0</span>
+        {/* Barra inferior */}
+        <div className="mt-5 pt-3 border-t border-line flex items-center justify-between text-2xs text-ink-muted">
+          <span>Universidad Peruana Los Andes</span>
+          <span className="text-ink-faint">ReservaUPLA v1.0</span>
         </div>
       </div>
     </AuthLayout>

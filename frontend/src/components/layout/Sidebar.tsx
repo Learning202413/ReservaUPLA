@@ -68,7 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
             <div>
               <h2 className="text-sm font-black text-white leading-tight">ReservaUPLA</h2>
-              <span className="text-3xs font-semibold text-sky-300">Construcción de Software</span>
+              <span className="text-3xs font-semibold text-sky-300">Gestión de Ambientes</span>
             </div>
           </div>
 
