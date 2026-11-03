@@ -19,32 +19,55 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
   usuario,
 }) => {
-  const menuItems: { id: PaginaActiva; label: string; icon: React.ReactNode; roles?: string[] }[] = [
+  const menuGroups: {
+    seccion: string;
+    items: { id: PaginaActiva; label: string; icon: React.ReactNode; roles?: string[] }[];
+  }[] = [
     {
-      id: 'dashboard',
-      label: 'Dashboard KPIs',
-      icon: <LayoutDashboard className="w-5 h-5" />,
+      seccion: 'Métricas',
+      items: [
+        {
+          id: 'dashboard',
+          label: 'Dashboard KPIs',
+          icon: <LayoutDashboard className="w-5 h-5" />,
+        },
+      ],
     },
     {
-      id: 'reservas',
-      label: 'Control de Reservas',
-      icon: <CalendarDays className="w-5 h-5" />,
+      seccion: 'Solicitudes',
+      items: [
+        {
+          id: 'reservas',
+          label: 'Control de Reservas',
+          icon: <CalendarDays className="w-5 h-5" />,
+        },
+        {
+          id: 'nueva-reserva',
+          label: 'Nueva Reserva',
+          icon: <PlusCircle className="w-5 h-5" />,
+        },
+      ],
     },
     {
-      id: 'nueva-reserva',
-      label: 'Nueva Solicitud',
-      icon: <PlusCircle className="w-5 h-5" />,
+      seccion: 'Infraestructura',
+      items: [
+        {
+          id: 'ambientes',
+          label: 'Ambientes UPLA',
+          icon: <Building2 className="w-5 h-5" />,
+        },
+      ],
     },
     {
-      id: 'ambientes',
-      label: 'Ambientes UPLA',
-      icon: <Building2 className="w-5 h-5" />,
-    },
-    {
-      id: 'usuarios',
-      label: 'Solicitantes',
-      icon: <Users className="w-5 h-5" />,
-      roles: ['Administrador'],
+      seccion: 'Administración',
+      items: [
+        {
+          id: 'usuarios',
+          label: 'Usuarios Solicitantes',
+          icon: <Users className="w-5 h-5" />,
+          roles: ['Administrador'],
+        },
+      ],
     },
   ];
 
@@ -82,29 +105,41 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
 
-        {/* Lista de Navegación */}
-        <nav className="p-4 space-y-1.5">
-          <p className="px-3 py-1.5 text-3xs font-extrabold uppercase tracking-widest text-sky-400">
-            Navegación del Sistema
-          </p>
+        {/* Lista de Navegación por Secciones / Grupos */}
+        <nav className="p-4 space-y-4">
+          {menuGroups.map((group) => {
+            const itemsVisibles = group.items.filter(
+              (item) => !item.roles || (usuario?.rol && item.roles.includes(usuario.rol))
+            );
 
-          {menuItems.map((item) => {
-            const isActive = paginaActiva === item.id;
+            if (itemsVisibles.length === 0) return null;
+
             return (
-              <button
-                key={item.id}
-                onClick={() => handleSelect(item.id)}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                  isActive
-                    ? 'bg-[#006699] text-white shadow-md shadow-sky-950/40 border border-sky-400/30'
-                    : 'text-sky-100/80 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                <span className={isActive ? 'text-white' : 'text-sky-300'}>
-                  {item.icon}
-                </span>
-                <span>{item.label}</span>
-              </button>
+              <div key={group.seccion} className="space-y-1">
+                <p className="px-3 py-1 text-3xs font-extrabold uppercase tracking-widest text-sky-400">
+                  {group.seccion}
+                </p>
+
+                {itemsVisibles.map((item) => {
+                  const isActive = paginaActiva === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => handleSelect(item.id)}
+                      className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                        isActive
+                          ? 'bg-[#006699] text-white shadow-md shadow-sky-950/40 border border-sky-400/30'
+                          : 'text-sky-100/80 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      <span className={isActive ? 'text-white' : 'text-sky-300'}>
+                        {item.icon}
+                      </span>
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             );
           })}
         </nav>

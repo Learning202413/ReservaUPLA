@@ -23,8 +23,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   const [modalLogoutAbierto, setModalLogoutAbierto] = useState(false);
 
   const titulosPorPagina: Record<PaginaActiva, { seccion: string; pagina: string }> = {
-    dashboard: { seccion: 'Métricas', pagina: 'Dashboard de Indicadores' },
-    reservas: { seccion: 'Gestión', pagina: 'Control de Reservas' },
+    dashboard: { seccion: 'Métricas', pagina: 'Dashboard KPIs' },
+    reservas: { seccion: 'Solicitudes', pagina: 'Control de Reservas' },
     'nueva-reserva': { seccion: 'Solicitudes', pagina: 'Nueva Reserva' },
     ambientes: { seccion: 'Infraestructura', pagina: 'Ambientes UPLA' },
     usuarios: { seccion: 'Administración', pagina: 'Usuarios Solicitantes' },

@@ -232,7 +232,7 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ onSuccess })
   return (
     <PageContainer>
       <PageHeader
-        title="Nueva Solicitud de Reserva"
+        title="Nueva Reserva"
         subtitle="Verificación visual en tiempo real de disponibilidad horaria, aforo y políticas institucionales."
       />
 
