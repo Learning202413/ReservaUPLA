@@ -157,12 +157,12 @@ export const api = {
     return nueva;
   },
 
-  async cambiarEstadoReserva(id: string, nuevoEstado: string, rolEjecutor: string = 'Administrador'): Promise<void> {
+  async cambiarEstadoReserva(id: string, nuevoEstado: string, rolEjecutor: string = 'Administrador', motivoRechazo?: string): Promise<void> {
     try {
       const res = await fetch(`${API_BASE}/Reservas/${id}/estado`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nuevoEstado, rolEjecutor }),
+        body: JSON.stringify({ nuevoEstado, rolEjecutor, motivoRechazo }),
       });
       if (!res.ok) {
         const error = await res.json();
@@ -176,6 +176,7 @@ export const api = {
     if (!r) throw new Error('Reserva no encontrada');
     if (r.estado === 'Rechazada') throw new Error('RN-06: Una reserva rechazada no puede modificarse.');
     r.estado = nuevoEstado as any;
+    if (motivoRechazo) r.motivoRechazo = motivoRechazo;
   },
 
   async getAmbientes(): Promise<Ambiente[]> {

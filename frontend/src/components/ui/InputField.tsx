@@ -1,9 +1,9 @@
 import React, { forwardRef, useState } from 'react';
 
-export interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value'> {
   label: string;
   name: string;
-  value: string;
+  value?: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string | null;
   rightElement?: React.ReactNode;

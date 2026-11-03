@@ -16,6 +16,7 @@ import {
 } from '../components/ui';
 import { PageHeader } from '../components/layout/PageHeader';
 import { PageContainer } from '../components/layout/PageContainer';
+import { RechazarReservaModal } from '../components/reservas/RechazarReservaModal';
 import { api } from '../services/api';
 import { Reserva, Usuario } from '../types';
 import {
@@ -27,6 +28,9 @@ import {
   Clock,
   User,
   Building,
+  Ban,
+  AlertTriangle,
+  Info,
 } from 'lucide-react';
 
 interface ReservasPageProps {
@@ -47,14 +51,36 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
 
   // Modales
   const [reservaDetalle, setReservaDetalle] = useState<Reserva | null>(null);
-  const [modalConfirmacion, setModalConfirmacion] = useState<{
+
+  // Modal para Aprobación (Admin)
+  const [modalAprobar, setModalAprobar] = useState<{
     abierto: boolean;
-    accion: 'aprobar' | 'rechazar';
     reservaId: string;
     ambienteNombre: string;
   }>({
     abierto: false,
-    accion: 'aprobar',
+    reservaId: '',
+    ambienteNombre: '',
+  });
+
+  // Modal para Rechazo con justificación (Admin)
+  const [modalRechazar, setModalRechazar] = useState<{
+    abierto: boolean;
+    reservaId: string;
+    ambienteNombre: string;
+  }>({
+    abierto: false,
+    reservaId: '',
+    ambienteNombre: '',
+  });
+
+  // Modal para Cancelar solicitud por el usuario solicitante
+  const [modalCancelar, setModalCancelar] = useState<{
+    abierto: boolean;
+    reservaId: string;
+    ambienteNombre: string;
+  }>({
+    abierto: false,
     reservaId: '',
     ambienteNombre: '',
   });
@@ -75,6 +101,23 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
 
   useEffect(() => {
     cargarReservas();
+  }, []);
+
+  // Atajo de teclado global: '/' enfoca el buscador (Nielsen H7 / Shneiderman Aceleradores)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === '/' &&
+        document.activeElement?.tagName !== 'INPUT' &&
+        document.activeElement?.tagName !== 'TEXTAREA'
+      ) {
+        e.preventDefault();
+        const input = document.querySelector('input[type="text"]') as HTMLInputElement;
+        if (input) input.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const esAdmin = usuario?.rol === 'Administrador';
@@ -101,24 +144,51 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
     paginaActual * itemsPorPagina
   );
 
-  const handleAbrirConfirmacion = (id: string, nombre: string, accion: 'aprobar' | 'rechazar') => {
-    setModalConfirmacion({
-      abierto: true,
-      accion,
-      reservaId: id,
-      ambienteNombre: nombre,
-    });
-  };
-
-  const handleEjecutarAccion = async () => {
+  // Acciones de administración
+  const handleConfirmarAprobar = async () => {
     setProcesando(true);
     try {
-      const nuevoEstado = modalConfirmacion.accion === 'aprobar' ? 'Aprobada' : 'Rechazada';
-      await api.cambiarEstadoReserva(modalConfirmacion.reservaId, nuevoEstado);
+      await api.cambiarEstadoReserva(modalAprobar.reservaId, 'Aprobada', 'Administrador');
       await cargarReservas();
-      setModalConfirmacion((prev) => ({ ...prev, abierto: false }));
+      setModalAprobar((prev) => ({ ...prev, abierto: false }));
     } catch (err) {
-      console.error('Error al procesar reserva:', err);
+      console.error('Error al aprobar reserva:', err);
+    } finally {
+      setProcesando(false);
+    }
+  };
+
+  const handleConfirmarRechazar = async (motivo: string) => {
+    setProcesando(true);
+    try {
+      await api.cambiarEstadoReserva(
+        modalRechazar.reservaId,
+        'Rechazada',
+        'Administrador',
+        motivo
+      );
+      await cargarReservas();
+      setModalRechazar((prev) => ({ ...prev, abierto: false }));
+    } catch (err) {
+      console.error('Error al rechazar reserva:', err);
+    } finally {
+      setProcesando(false);
+    }
+  };
+
+  // Acción de cancelación por parte del solicitante (Locus de control / Puente de Ejecución)
+  const handleConfirmarCancelar = async () => {
+    setProcesando(true);
+    try {
+      await api.cambiarEstadoReserva(
+        modalCancelar.reservaId,
+        'Cancelada',
+        usuario?.rol || 'Docente'
+      );
+      await cargarReservas();
+      setModalCancelar((prev) => ({ ...prev, abierto: false }));
+    } catch (err) {
+      console.error('Error al cancelar reserva:', err);
     } finally {
       setProcesando(false);
     }
@@ -151,10 +221,10 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
           setBusqueda(val);
           setPaginaActual(1);
         }}
-        searchPlaceholder="Buscar por ambiente, solicitante o motivo..."
+        searchPlaceholder="Buscar por ambiente, solicitante o motivo (Presione '/' para enfocar)..."
       >
         <div className="flex items-center gap-1.5">
-          {['todos', 'Pendiente', 'Aprobada', 'Rechazada'].map((estado) => {
+          {['todos', 'Pendiente', 'Aprobada', 'Rechazada', 'Cancelada'].map((estado) => {
             const isSelected = filtroEstado === estado;
             return (
               <button
@@ -245,13 +315,20 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
                     title="Ver detalle de la solicitud"
                   />
 
+                  {/* Acciones de Administrador */}
                   {esAdmin && r.estado === 'Pendiente' && (
                     <>
                       <ActionButton
                         size="sm"
                         variant="secondary"
                         icon={CheckCircle}
-                        onClick={() => handleAbrirConfirmacion(r.id, r.ambienteNombre, 'aprobar')}
+                        onClick={() =>
+                          setModalAprobar({
+                            abierto: true,
+                            reservaId: r.id,
+                            ambienteNombre: r.ambienteNombre,
+                          })
+                        }
                         className="text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/60"
                         title="Aprobar solicitud de reserva"
                       >
@@ -262,12 +339,37 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
                         size="sm"
                         variant="danger"
                         icon={XCircle}
-                        onClick={() => handleAbrirConfirmacion(r.id, r.ambienteNombre, 'rechazar')}
-                        title="Rechazar solicitud de reserva"
+                        onClick={() =>
+                          setModalRechazar({
+                            abierto: true,
+                            reservaId: r.id,
+                            ambienteNombre: r.ambienteNombre,
+                          })
+                        }
+                        title="Rechazar solicitud con motivo detallado"
                       >
                         Rechazar
                       </ActionButton>
                     </>
+                  )}
+
+                  {/* Acción de Solicitante: Cancelar propia solicitud (Puente de Ejecución / Control de Usuario) */}
+                  {!esAdmin && r.estado === 'Pendiente' && (
+                    <ActionButton
+                      size="sm"
+                      variant="danger"
+                      icon={Ban}
+                      onClick={() =>
+                        setModalCancelar({
+                          abierto: true,
+                          reservaId: r.id,
+                          ambienteNombre: r.ambienteNombre,
+                        })
+                      }
+                      title="Cancelar mi solicitud de reserva"
+                    >
+                      Cancelar
+                    </ActionButton>
                   )}
                 </div>
               </TableCell>
@@ -296,7 +398,7 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
         maxWidth="lg"
       >
         {reservaDetalle && (
-          <div className="space-y-4 text-left">
+          <div className="space-y-4 text-left font-sans">
             <div className="p-4 bg-canvas rounded-2xl border border-line space-y-3">
               <div className="flex items-center justify-between">
                 <div>
@@ -313,15 +415,22 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-2 border-t border-line-soft">
                 <div className="flex items-center gap-2 text-ink-muted">
                   <User className="w-4 h-4 text-primary shrink-0" />
-                  <span><strong>Docente / Solicitante:</strong> {reservaDetalle.solicitanteNombre}</span>
+                  <span>
+                    <strong>Docente / Solicitante:</strong> {reservaDetalle.solicitanteNombre}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-ink-muted">
                   <Calendar className="w-4 h-4 text-primary shrink-0" />
-                  <span><strong>Fecha Programada:</strong> {reservaDetalle.fecha}</span>
+                  <span>
+                    <strong>Fecha Programada:</strong> {reservaDetalle.fecha}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-ink-muted">
                   <Clock className="w-4 h-4 text-primary shrink-0" />
-                  <span><strong>Horario Asignado:</strong> {reservaDetalle.horaInicio} a {reservaDetalle.horaFin}</span>
+                  <span>
+                    <strong>Horario Asignado:</strong> {reservaDetalle.horaInicio} a{' '}
+                    {reservaDetalle.horaFin}
+                  </span>
                 </div>
               </div>
             </div>
@@ -334,28 +443,62 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
                 {reservaDetalle.motivo}
               </p>
             </div>
+
+            {/* Muestra del Motivo de Rechazo (Puente de Evaluación - Donald Norman) */}
+            {reservaDetalle.estado === 'Rechazada' && (
+              <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900/60 text-rose-900 dark:text-rose-200 text-xs space-y-1">
+                <span className="font-bold flex items-center gap-1.5 text-rose-800 dark:text-rose-300">
+                  <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
+                  Motivo Oficial del Dictamen Administrativo:
+                </span>
+                <p className="leading-relaxed pl-5 font-medium">
+                  {reservaDetalle.motivoRechazo ||
+                    'La solicitud no cumplió con las políticas de disponibilidad o prelación académica de la facultad.'}
+                </p>
+              </div>
+            )}
+
+            {reservaDetalle.estado === 'Cancelada' && (
+              <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-ink-muted text-xs flex items-center gap-2">
+                <Info className="w-4 h-4 text-ink-muted shrink-0" />
+                <span>Esta solicitud fue cancelada por el usuario solicitante antes de su dictamen.</span>
+              </div>
+            )}
           </div>
         )}
       </ModalWrapper>
 
-      {/* Modal de Confirmación para Aprobar / Rechazar */}
+      {/* Modal de Confirmación para Aprobar */}
       <ConfirmModal
-        isOpen={modalConfirmacion.abierto}
-        onClose={() => setModalConfirmacion((prev) => ({ ...prev, abierto: false }))}
-        onConfirm={handleEjecutarAccion}
+        isOpen={modalAprobar.abierto}
+        onClose={() => setModalAprobar((prev) => ({ ...prev, abierto: false }))}
+        onConfirm={handleConfirmarAprobar}
         loading={procesando}
-        title={
-          modalConfirmacion.accion === 'aprobar'
-            ? '¿Aprobar solicitud de reserva?'
-            : '¿Rechazar solicitud de reserva?'
-        }
-        subtitle={`Ambiente: ${modalConfirmacion.ambienteNombre}. Esta acción notificará al solicitante y actualizará la disponibilidad horaria institucional.`}
-        confirmText={
-          modalConfirmacion.accion === 'aprobar'
-            ? 'Aprobar Reserva'
-            : 'Rechazar Reserva'
-        }
-        confirmVariant={modalConfirmacion.accion === 'aprobar' ? 'primary' : 'danger'}
+        title="¿Aprobar solicitud de reserva?"
+        subtitle={`Ambiente: ${modalAprobar.ambienteNombre}. Esta acción formalizará el turno y lo reflejará en el cronograma oficial.`}
+        confirmText="Aprobar Reserva"
+        confirmVariant="primary"
+      />
+
+      {/* Modal con Motivo Detallado para Rechazar (Norman - Feedback & Shneiderman) */}
+      <RechazarReservaModal
+        isOpen={modalRechazar.abierto}
+        ambienteNombre={modalRechazar.ambienteNombre}
+        loading={procesando}
+        onClose={() => setModalRechazar((prev) => ({ ...prev, abierto: false }))}
+        onConfirm={handleConfirmarRechazar}
+      />
+
+      {/* Modal de Confirmación para Cancelar Solicitud (Locus de Control) */}
+      <ConfirmModal
+        isOpen={modalCancelar.abierto}
+        onClose={() => setModalCancelar((prev) => ({ ...prev, abierto: false }))}
+        onConfirm={handleConfirmarCancelar}
+        loading={procesando}
+        title="¿Cancelar su solicitud de reserva?"
+        subtitle={`Ambiente: ${modalCancelar.ambienteNombre}. La solicitud será anulada inmediatamente y el turno quedará libre para otros docentes.`}
+        confirmText="Sí, Cancelar Solicitud"
+        confirmVariant="danger"
       />
     </PageContainer>
   );

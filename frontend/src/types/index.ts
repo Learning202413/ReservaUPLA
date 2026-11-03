@@ -43,6 +43,7 @@ export interface Reserva {
   ambienteNombre: string;
   ambienteTipo: string;
   ambienteUbicacion: string;
+  motivoRechazo?: string;
 }
 
 export interface CrearReservaInput {

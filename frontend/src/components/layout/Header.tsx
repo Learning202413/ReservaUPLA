@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { LogOut, Menu, ChevronDown } from 'lucide-react';
+import { LogOut, Menu, ChevronDown, HelpCircle } from 'lucide-react';
 import { Usuario } from '../../types';
 import { ThemeToggle } from './ThemeToggle';
+import { ReglamentoModal } from './ReglamentoModal';
 
 interface HeaderProps {
   usuario?: Usuario | null;
@@ -19,6 +20,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleSidebar,
 }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
+  const [modalReglamento, setModalReglamento] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Cerrar menú al hacer clic afuera
@@ -69,8 +71,19 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Lado derecho: Botón Modo Oscuro + Menú de Perfil */}
+        {/* Lado derecho: Guía + Botón Modo Oscuro + Menú de Perfil */}
         <div className="flex items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={() => setModalReglamento(true)}
+            aria-label="Ver reglamento y guía de reservas"
+            title="Guía y reglamento"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-ink-muted hover:text-ink border border-line bg-surface hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer min-h-[38px]"
+          >
+            <HelpCircle className="w-4 h-4 text-primary dark:text-sky-400 shrink-0" />
+            <span className="hidden md:inline">Guía</span>
+          </button>
+
           <ThemeToggle />
 
           <div className="h-6 w-px bg-line" aria-hidden="true" />
@@ -133,6 +146,11 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </div>
+
+      <ReglamentoModal
+        isOpen={modalReglamento}
+        onClose={() => setModalReglamento(false)}
+      />
     </header>
   );
 };

@@ -24,6 +24,8 @@ public class Reserva
     [MaxLength(30)]
     public string Res_Estado { get; set; } = "Pendiente"; // Pendiente, Aprobada, Rechazada, Cancelada
 
+    public string? Res_MotivoRechazo { get; set; }
+
     [Required]
     public Guid Res_UsuarioId { get; set; }
 

@@ -41,7 +41,8 @@ public class ReservaService : IReservaService
             AmbienteId = r.Res_AmbienteId,
             AmbienteNombre = r.Ambiente?.Amb_Nombre ?? "Ambiente no especificado",
             AmbienteTipo = r.Ambiente?.Amb_Tipo ?? "",
-            AmbienteUbicacion = r.Ambiente?.Amb_Ubicacion ?? ""
+            AmbienteUbicacion = r.Ambiente?.Amb_Ubicacion ?? "",
+            MotivoRechazo = r.Res_MotivoRechazo
         });
     }
 
@@ -65,7 +66,8 @@ public class ReservaService : IReservaService
             AmbienteId = r.Res_AmbienteId,
             AmbienteNombre = r.Ambiente?.Amb_Nombre ?? "",
             AmbienteTipo = r.Ambiente?.Amb_Tipo ?? "",
-            AmbienteUbicacion = r.Ambiente?.Amb_Ubicacion ?? ""
+            AmbienteUbicacion = r.Ambiente?.Amb_Ubicacion ?? "",
+            MotivoRechazo = r.Res_MotivoRechazo
         });
     }
 
@@ -143,9 +145,15 @@ public class ReservaService : IReservaService
         if (reserva.Res_Estado == "Rechazada")
             return Result<bool>.Failure("RN-06: Una reserva en estado 'Rechazada' no puede modificarse.");
 
-        // RN-05: Solo el administrador puede aprobar o rechazar
-        if ((dto.NuevoEstado == "Aprobada" || dto.NuevoEstado == "Rechazada") && dto.RolEjecutor != "Administrador")
+        if (dto.NuevoEstado == "Cancelada")
+        {
+            if (reserva.Res_Estado != "Pendiente")
+                return Result<bool>.Failure("Solo se pueden cancelar solicitudes en estado 'Pendiente'.");
+        }
+        else if ((dto.NuevoEstado == "Aprobada" || dto.NuevoEstado == "Rechazada") && dto.RolEjecutor != "Administrador")
+        {
             return Result<bool>.Failure("RN-05: Solo el administrador tiene permisos para aprobar o rechazar reservas.");
+        }
 
         // Si se aprueba, re-verificar que no haya entrado en conflicto
         if (dto.NuevoEstado == "Aprobada")
@@ -162,6 +170,11 @@ public class ReservaService : IReservaService
         }
 
         reserva.Res_Estado = dto.NuevoEstado;
+        if (!string.IsNullOrWhiteSpace(dto.MotivoRechazo))
+        {
+            reserva.Res_MotivoRechazo = dto.MotivoRechazo.Trim();
+        }
+
         await _reservaRepository.GuardarCambiosAsync();
 
         return Result<bool>.Success(true);

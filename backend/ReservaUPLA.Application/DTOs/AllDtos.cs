@@ -86,6 +86,7 @@ public class ReservaDto
     public string AmbienteNombre { get; set; } = string.Empty;
     public string AmbienteTipo { get; set; } = string.Empty;
     public string AmbienteUbicacion { get; set; } = string.Empty;
+    public string? MotivoRechazo { get; set; }
 }
 
 public class CrearReservaDto
