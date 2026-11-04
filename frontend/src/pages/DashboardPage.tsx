@@ -169,31 +169,31 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         </div>
 
         {/* Panel Informativo de Políticas */}
-        <div className="bg-[#00334D] dark:bg-[#002233] text-white rounded-2xl p-6 shadow-md flex flex-col justify-between border border-sky-950">
+        <div className="bg-sidebar text-white rounded-2xl p-6 shadow-md flex flex-col justify-between border border-sidebar-line">
           <div>
             <span className="text-3xs font-extrabold uppercase tracking-widest text-sky-300">
-              Políticas de Operación
+              Guía Rápida de Uso
             </span>
             <h3 className="text-lg font-black mt-1 text-white">
-              Reglamento de Ambientes
+              Reglas para Reservar
             </h3>
-            <p className="text-xs text-sky-100/90 mt-2.5 leading-relaxed">
-              Las solicitudes registradas son procesadas bajo validación en tiempo real para garantizar disponibilidad continua y trazabilidad oficial de la infraestructura institucional.
+            <p className="text-xs text-sky-100/90 mt-2.5 leading-relaxed font-normal">
+              Para que todos los docentes y estudiantes usen los ambientes de forma ordenada, ten en cuenta estas 3 reglas:
             </p>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-sky-800/80 text-2xs text-sky-200/90 space-y-2 font-medium">
-            <p className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-              <span>Validación algorítmica sin cruce de horarios</span>
+          <div className="mt-6 pt-4 border-t border-white/10 text-xs text-sky-200/90 space-y-2.5 font-medium">
+            <p className="flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+              <span><strong>Sin cruces:</strong> No se pueden pedir horarios que ya estén ocupados.</span>
             </p>
-            <p className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-              <span>Horario de atención institucional: 07:00 a 22:00</span>
+            <p className="flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-sky-400 shrink-0" />
+              <span><strong>Horario:</strong> El campus atiende de <strong>07:00 a 22:00</strong>.</span>
             </p>
-            <p className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-              <span>Aprobación y asignación por administración</span>
+            <p className="flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+              <span><strong>Revisión:</strong> Administración revisa y aprueba cada solicitud.</span>
             </p>
           </div>
         </div>

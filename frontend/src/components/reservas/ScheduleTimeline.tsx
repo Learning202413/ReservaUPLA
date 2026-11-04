@@ -229,7 +229,7 @@ export const ScheduleTimeline: React.FC<ScheduleTimelineProps> = ({
       )}
 
       <p className="text-3xs text-ink-faint text-left pt-1 leading-normal">
-        * Haga clic sobre cualquier bloque <strong>Libre</strong> para fijar automáticamente el horario de inicio y fin en el formulario, eliminando errores de cálculo mental.
+        * Haz clic en cualquier horario <strong>Libre</strong> para seleccionarlo directamente en el formulario.
       </p>
     </div>
   );

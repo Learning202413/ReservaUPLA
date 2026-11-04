@@ -509,11 +509,11 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ onSuccess, o
               </div>
 
               <div className="p-3 rounded-xl bg-canvas border border-line text-2xs text-ink-muted space-y-1.5 leading-relaxed">
-                <p className="font-semibold text-ink">Garantías de Usabilidad UPLA:</p>
+                <p className="font-semibold text-ink">Beneficios del Sistema:</p>
                 <ul className="list-disc list-inside space-y-1 text-ink-muted">
-                  <li>Validación algorítmica simétrica de solapamientos (RN-01).</li>
-                  <li>Guardado automático de borrador en su navegador.</li>
-                  <li>Selección directa de bloques libres desde el cronograma visual.</li>
+                  <li>Evita cruces con reservas de otros docentes.</li>
+                  <li>Guarda tu borrador por si se cierra la pestaña.</li>
+                  <li>Puedes elegir tu turno tocando el horario libre.</li>
                 </ul>
               </div>
             </div>
