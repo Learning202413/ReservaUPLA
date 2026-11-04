@@ -45,13 +45,20 @@ export const ReservaTicketModal: React.FC<ReservaTicketModalProps> = ({
         {/* Ficha / Ticket Digital */}
         <div className="bg-canvas p-4 rounded-2xl border border-line space-y-3 font-sans">
           <div className="flex items-center justify-between border-b border-line pb-2.5">
-            <div>
-              <span className="text-3xs uppercase font-extrabold tracking-wider text-ink-muted">
-                Código de Solicitud
-              </span>
-              <p className="font-mono text-sm font-black text-primary dark:text-sky-400">
-                UPLA-{reserva.id.slice(0, 8).toUpperCase()}
-              </p>
+            <div className="flex items-center gap-2.5">
+              <img
+                src="/upla_icon.png"
+                alt="UPLA"
+                className="w-7 h-7 object-contain"
+              />
+              <div>
+                <span className="text-3xs uppercase font-extrabold tracking-wider text-ink-muted">
+                  Código de Solicitud
+                </span>
+                <p className="font-mono text-sm font-black text-primary dark:text-sky-400">
+                  UPLA-{reserva.id.slice(0, 8).toUpperCase()}
+                </p>
+              </div>
             </div>
             <div className="text-right">
               <span className="text-3xs uppercase font-extrabold tracking-wider text-ink-muted">

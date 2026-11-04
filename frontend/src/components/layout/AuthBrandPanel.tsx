@@ -22,11 +22,11 @@ export const AuthBrandPanel: React.FC = () => {
 
       {/* Cabecera de Logo superior izquierda */}
       <div className="relative z-10 flex items-center gap-3.5">
-        <div className="bg-white p-2.5 rounded-2xl shadow-lg ring-2 ring-white/20">
+        <div className="bg-white p-2.5 rounded-2xl shadow-lg ring-2 ring-white/20 shrink-0">
           <img
-            src="/upla_logo.png"
+            src="/upla_icon.png"
             alt="Universidad Peruana Los Andes"
-            className="h-9 w-auto object-contain"
+            className="h-9 w-9 object-contain"
           />
         </div>
         <div>

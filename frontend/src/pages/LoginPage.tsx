@@ -104,6 +104,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess, initialMessage 
       <div className="w-full text-left max-w-md mx-auto">
         {/* Cabecera del formulario */}
         <div className="mb-5 text-left">
+          <div className="mb-3">
+            <img
+              src="/upla_logo_horizontal.png"
+              alt="Universidad Peruana Los Andes"
+              className="h-10 w-auto object-contain"
+            />
+          </div>
           <span className="text-3xs font-extrabold uppercase tracking-widest text-primary bg-sky-50 dark:bg-sky-950/50 px-2 py-0.5 rounded-md border border-sky-200 dark:border-sky-800">
             Portal Institucional
           </span>

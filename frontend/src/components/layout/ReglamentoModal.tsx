@@ -18,6 +18,17 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
       maxWidth="lg"
     >
       <div className="space-y-4 text-left text-xs sm:text-sm text-ink-muted">
+        <div className="flex items-center justify-between p-3 rounded-xl bg-canvas border border-line">
+          <img
+            src="/upla_logo_horizontal.png"
+            alt="UPLA"
+            className="h-8 w-auto object-contain"
+          />
+          <span className="text-3xs font-extrabold uppercase tracking-widest text-primary dark:text-sky-400 bg-sky-50 dark:bg-sky-950/80 px-2 py-0.5 rounded-md border border-sky-200 dark:border-sky-800">
+            Normativa Oficial
+          </span>
+        </div>
+
         <div className="p-3.5 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 text-sky-900 dark:text-sky-200 flex items-start gap-2.5">
           <AlertCircle className="w-4 h-4 text-primary dark:text-sky-400 shrink-0 mt-0.5" />
           <p className="text-xs leading-relaxed">

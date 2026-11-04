@@ -84,16 +84,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Cabecera Sidebar con Logo */}
         <div className="p-5 flex items-center justify-between border-b border-sidebar-line">
           <div className="flex items-center gap-3">
-            <div className="bg-white p-2 rounded-xl shadow-xs">
+            <div className="bg-white p-2 rounded-xl shadow-xs shrink-0">
               <img
-                src="/upla_logo.png"
+                src="/upla_icon.png"
                 alt="UPLA Logo"
-                className="h-7 w-auto object-contain"
+                className="h-7 w-7 object-contain"
               />
             </div>
-            <div>
-              <h2 className="text-sm font-black text-white leading-tight">ReservaUPLA</h2>
-              <span className="text-3xs font-semibold text-sky-300">Gestión de Ambientes</span>
+            <div className="min-w-0">
+              <h2 className="text-sm font-black text-white leading-tight truncate">ReservaUPLA</h2>
+              <span className="text-3xs font-semibold text-sky-300 block truncate">Gestión de Ambientes</span>
             </div>
           </div>
 

@@ -9,14 +9,16 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
   return (
     <div className="h-dvh max-h-dvh w-full flex flex-col lg:flex-row bg-surface overflow-hidden select-none">
       {/* Encabezado superior para pantallas móviles (< lg) */}
-      <header className="lg:hidden bg-[#00334D] px-5 py-3.5 flex items-center justify-center gap-3 shadow-xs border-b border-sky-950 shrink-0">
+      <header className="lg:hidden bg-sidebar px-5 py-3.5 flex items-center justify-between shadow-xs border-b border-sidebar-line shrink-0">
         <div className="flex items-center gap-3">
-          <img
-            src="/upla_logo.png"
-            alt="Universidad Peruana Los Andes"
-            className="h-7 w-auto object-contain bg-white px-2 py-1 rounded-lg"
-          />
-          <span className="text-white font-bold text-xs">ReservaUPLA</span>
+          <div className="bg-white p-1.5 rounded-lg shadow-xs">
+            <img
+              src="/upla_icon.png"
+              alt="Universidad Peruana Los Andes"
+              className="h-6 w-6 object-contain"
+            />
+          </div>
+          <span className="text-white font-bold text-sm">ReservaUPLA</span>
         </div>
       </header>
 
