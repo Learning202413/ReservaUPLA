@@ -158,28 +158,30 @@ export const ScheduleTimeline: React.FC<ScheduleTimelineProps> = ({
             switch (slot.estado) {
               case 'aprobada':
                 containerStyle =
-                  'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60 text-rose-900 dark:text-rose-200 cursor-not-allowed';
-                badgeStyle = 'bg-rose-200/80 dark:bg-rose-900/80 text-rose-900 dark:text-rose-100';
+                  'bg-rose-50/80 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60 text-rose-900 dark:text-rose-200 cursor-not-allowed opacity-90';
+                badgeStyle =
+                  'bg-rose-100 dark:bg-rose-900/80 text-rose-800 dark:text-rose-100 border border-rose-200 dark:border-rose-800 font-bold px-1.5 py-0.5 rounded-md';
                 title = `Ocupado por ${slot.reservaInfo?.solicitante}: ${slot.reservaInfo?.motivo}`;
                 break;
               case 'pendiente':
                 containerStyle =
-                  'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 cursor-not-allowed';
-                badgeStyle = 'bg-amber-200/80 dark:bg-amber-900/80 text-amber-900 dark:text-amber-100';
+                  'bg-amber-50/80 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 cursor-not-allowed opacity-90';
+                badgeStyle =
+                  'bg-amber-100 dark:bg-amber-900/80 text-amber-900 dark:text-amber-100 border border-amber-200 dark:border-amber-800 font-bold px-1.5 py-0.5 rounded-md';
                 title = `Solicitud pendiente: ${slot.reservaInfo?.motivo}`;
                 break;
               case 'seleccionada':
                 containerStyle =
-                  'bg-sky-50 dark:bg-sky-950/60 border-primary dark:border-sky-500 text-primary dark:text-sky-200 ring-2 ring-primary/20 shadow-xs cursor-pointer';
-                badgeStyle = 'bg-primary text-white font-bold';
+                  'bg-sky-50 dark:bg-sky-950/70 border-primary dark:border-sky-400 text-primary dark:text-sky-200 ring-2 ring-primary/25 shadow-xs cursor-pointer';
+                badgeStyle = 'bg-primary text-white font-bold shadow-2xs px-1.5 py-0.5 rounded-md';
                 title = 'Rango actualmente seleccionado por usted';
                 break;
               case 'libre':
               default:
                 containerStyle =
-                  'bg-canvas hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30 border-line hover:border-emerald-300 dark:hover:border-emerald-800 text-ink cursor-pointer transition-colors';
+                  'bg-white dark:bg-canvas hover:bg-emerald-50/80 dark:hover:bg-emerald-950/40 border-slate-200 dark:border-line hover:border-emerald-400 dark:hover:border-emerald-700 text-ink shadow-2xs hover:shadow-xs cursor-pointer transition-all';
                 badgeStyle =
-                  'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300';
+                  'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/80 font-bold px-1.5 py-0.5 rounded-md';
                 title = 'Horario libre. Clic para seleccionar este bloque de 1 hora';
                 break;
             }

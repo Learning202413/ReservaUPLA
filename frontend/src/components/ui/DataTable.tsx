@@ -110,7 +110,7 @@ export const TableRow: React.FC<{
 }> = ({ children, className = '', onClick }) => (
   <tr
     onClick={onClick}
-    className={`hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors ${
+    className={`hover:bg-slate-100/70 dark:hover:bg-slate-800/50 transition-colors ${
       onClick ? 'cursor-pointer' : ''
     } ${className}`}
   >
