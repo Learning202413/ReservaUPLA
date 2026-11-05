@@ -519,11 +519,11 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onS
               </div>
 
               <div className="p-3 rounded-xl bg-canvas border border-line text-2xs text-ink-muted space-y-1.5 leading-relaxed">
-                <p className="font-semibold text-ink">Reglas de Negocio Oficiales:</p>
+                <p className="font-semibold text-ink">Pautas Institucionales:</p>
                 <ul className="list-disc list-inside space-y-1 text-ink-muted">
-                  <li><strong>RN-01:</strong> Sin cruce de horarios para el mismo ambiente.</li>
-                  <li><strong>RN-03:</strong> La hora de fin debe ser mayor a la hora de inicio.</li>
-                  <li><strong>RN-04:</strong> Horario permitido exclusivamente de 07:00 a 22:00.</li>
+                  <li>Ambientes disponibles entre las 07:00 y las 22:00 horas.</li>
+                  <li>La hora de fin debe ser posterior a la de inicio.</li>
+                  <li>Validación en tiempo real para evitar cruce con otras clases.</li>
                 </ul>
               </div>
             </div>

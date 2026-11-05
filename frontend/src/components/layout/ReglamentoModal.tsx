@@ -33,79 +33,47 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
         <div className="p-3.5 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 text-sky-900 dark:text-sky-200 flex items-start gap-2.5">
           <AlertCircle className="w-4 h-4 text-primary dark:text-sky-400 shrink-0 mt-0.5" aria-hidden="true" />
           <p className="text-xs leading-relaxed">
-            Reglas de negocio mínimas oficiales del sistema ReservaUPLA (Sección 6 del Caso Práctico):
+            Para evitar cruces de horarios y garantizar que todos los docentes cuenten con sus espacios a tiempo, las reservas en la Universidad Peruana Los Andes se gestionan bajo las siguientes normas:
           </p>
         </div>
 
-        <div className="space-y-2.5">
-          <div className="flex items-start gap-3 p-3 rounded-xl bg-canvas border border-line">
-            <span className="px-2 py-0.5 rounded text-3xs font-extrabold bg-sky-100 dark:bg-sky-950 text-primary dark:text-sky-300 shrink-0 mt-0.5 border border-sky-200 dark:border-sky-800">
-              RN-01
-            </span>
+        <div className="space-y-3">
+          <div className="flex items-start gap-3 p-3.5 rounded-xl bg-canvas border border-line">
+            <div className="w-2 h-2 rounded-full bg-sky-500 shrink-0 mt-1.5" />
             <div>
-              <p className="font-bold text-ink text-xs">Sin duplicidad ni cruce de horarios</p>
+              <p className="font-bold text-ink text-xs">Horario de Atención del Campus</p>
               <p className="text-2xs text-ink-muted mt-0.5 leading-relaxed">
-                No se debe permitir más de una reserva aprobada para el mismo ambiente, fecha y horario.
+                Los ambientes se pueden solicitar únicamente entre las <strong>07:00 y las 22:00 horas</strong>, asegurando siempre que la hora de fin sea posterior a la de inicio.
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3 p-3 rounded-xl bg-canvas border border-line">
-            <span className="px-2 py-0.5 rounded text-3xs font-extrabold bg-sky-100 dark:bg-sky-950 text-primary dark:text-sky-300 shrink-0 mt-0.5 border border-sky-200 dark:border-sky-800">
-              RN-02
-            </span>
+          <div className="flex items-start gap-3 p-3.5 rounded-xl bg-canvas border border-line">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 mt-1.5" />
             <div>
-              <p className="font-bold text-ink text-xs">Registro obligatorio de datos</p>
+              <p className="font-bold text-ink text-xs">Disponibilidad sin Cruces</p>
               <p className="text-2xs text-ink-muted mt-0.5 leading-relaxed">
-                Toda reserva debe registrar fecha, hora de inicio, hora de fin, ambiente, solicitante y motivo.
+                El sistema no permite que dos docentes o facultades tengan una reserva aprobada en el mismo ambiente, fecha y horario.
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3 p-3 rounded-xl bg-canvas border border-line">
-            <span className="px-2 py-0.5 rounded text-3xs font-extrabold bg-sky-100 dark:bg-sky-950 text-primary dark:text-sky-300 shrink-0 mt-0.5 border border-sky-200 dark:border-sky-800">
-              RN-03
-            </span>
+          <div className="flex items-start gap-3 p-3.5 rounded-xl bg-canvas border border-line">
+            <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0 mt-1.5" />
             <div>
-              <p className="font-bold text-ink text-xs">Coherencia de horario</p>
+              <p className="font-bold text-ink text-xs">Datos Completos de la Solicitud</p>
               <p className="text-2xs text-ink-muted mt-0.5 leading-relaxed">
-                La hora de fin debe ser mayor que la hora de inicio.
+                Toda reserva debe indicar la fecha, horario, ambiente solicitado, nombre del solicitante y el motivo académico que sustenta el uso del espacio.
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3 p-3 rounded-xl bg-canvas border border-line">
-            <span className="px-2 py-0.5 rounded text-3xs font-extrabold bg-sky-100 dark:bg-sky-950 text-primary dark:text-sky-300 shrink-0 mt-0.5 border border-sky-200 dark:border-sky-800">
-              RN-04
-            </span>
+          <div className="flex items-start gap-3 p-3.5 rounded-xl bg-canvas border border-line">
+            <div className="w-2 h-2 rounded-full bg-purple-500 shrink-0 mt-1.5" />
             <div>
-              <p className="font-bold text-ink text-xs">Horario institucional permitido</p>
+              <p className="font-bold text-ink text-xs">Revisión y Dictamen Administrativo</p>
               <p className="text-2xs text-ink-muted mt-0.5 leading-relaxed">
-                Las reservas solo podrán realizarse entre las 07:00 y 22:00 horas.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 p-3 rounded-xl bg-canvas border border-line">
-            <span className="px-2 py-0.5 rounded text-3xs font-extrabold bg-sky-100 dark:bg-sky-950 text-primary dark:text-sky-300 shrink-0 mt-0.5 border border-sky-200 dark:border-sky-800">
-              RN-05
-            </span>
-            <div>
-              <p className="font-bold text-ink text-xs">Dictamen exclusivo</p>
-              <p className="text-2xs text-ink-muted mt-0.5 leading-relaxed">
-                Solo el administrador puede aprobar o rechazar una reserva.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 p-3 rounded-xl bg-canvas border border-line">
-            <span className="px-2 py-0.5 rounded text-3xs font-extrabold bg-sky-100 dark:bg-sky-950 text-primary dark:text-sky-300 shrink-0 mt-0.5 border border-sky-200 dark:border-sky-800">
-              RN-06
-            </span>
-            <div>
-              <p className="font-bold text-ink text-xs">Inmutabilidad de estado</p>
-              <p className="text-2xs text-ink-muted mt-0.5 leading-relaxed">
-                Una reserva rechazada no podrá modificarse.
+                La administración revisa y aprueba o rechaza cada solicitud. Si una reserva es rechazada con su motivo oficial, no puede volver a modificarse.
               </p>
             </div>
           </div>

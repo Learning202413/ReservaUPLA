@@ -172,28 +172,28 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="bg-sidebar text-white rounded-2xl p-6 shadow-md flex flex-col justify-between border border-sidebar-line">
           <div>
             <span className="text-3xs font-extrabold uppercase tracking-widest text-sky-300">
-              Reglas de Negocio Oficiales
+              Políticas de Operación
             </span>
             <h3 className="text-lg font-black mt-1 text-white">
-              Políticas de Reserva UPLA
+              Pautas para Reservar
             </h3>
             <p className="text-xs text-sky-100/90 mt-2.5 leading-relaxed font-normal">
-              Las solicitudes se procesan bajo las reglas mínimas del sistema ReservaUPLA:
+              Normas de uso de ambientes institucionales según el reglamento oficial:
             </p>
           </div>
 
           <div className="mt-6 pt-4 border-t border-white/10 text-xs text-sky-200/90 space-y-2.5 font-medium">
             <p className="flex items-start gap-2.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 mt-1" />
-              <span><strong>RN-01:</strong> No se permite más de una reserva aprobada para el mismo ambiente, fecha y horario.</span>
+              <span className="w-2 h-2 rounded-full bg-sky-400 shrink-0 mt-1" />
+              <span><strong>Horario:</strong> El campus atiende solicitudes entre las <strong>07:00 y las 22:00 horas</strong>.</span>
             </p>
             <p className="flex items-start gap-2.5">
-              <span className="w-2 h-2 rounded-full bg-sky-400 shrink-0 mt-1" />
-              <span><strong>RN-04:</strong> Las reservas solo podrán realizarse entre las 07:00 y 22:00 horas.</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 mt-1" />
+              <span><strong>Sin cruces:</strong> No se aprueban dos solicitudes en el mismo ambiente y horario.</span>
             </p>
             <p className="flex items-start gap-2.5">
               <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0 mt-1" />
-              <span><strong>RN-05:</strong> Solo el administrador puede aprobar o rechazar una reserva.</span>
+              <span><strong>Dictamen:</strong> La administración revisa y autoriza cada pedido formalmente.</span>
             </p>
           </div>
         </div>
