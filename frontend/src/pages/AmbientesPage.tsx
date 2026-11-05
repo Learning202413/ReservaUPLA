@@ -196,10 +196,11 @@ export const AmbientesPage: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="form-label-standard">
+              <label htmlFor="select-tipo-espacio" className="form-label-standard">
                 Tipo de Espacio <span className="text-red-500">*</span>
               </label>
               <select
+                id="select-tipo-espacio"
                 value={tipo}
                 onChange={(e) => setTipo(e.target.value)}
                 className="form-input-standard"
@@ -233,10 +234,11 @@ export const AmbientesPage: React.FC = () => {
           />
 
           <div>
-            <label className="form-label-standard">
+            <label htmlFor="select-estado-operativo" className="form-label-standard">
               Estado Operativo <span className="text-red-500">*</span>
             </label>
             <select
+              id="select-estado-operativo"
               value={estado}
               onChange={(e) => setEstado(e.target.value)}
               className="form-input-standard"

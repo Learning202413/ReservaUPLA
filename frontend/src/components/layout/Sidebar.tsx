@@ -162,7 +162,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Tarjeta de Especificación y Rol en Pie */}
-      <div className="p-4 border-t border-sidebar-line m-3 rounded-2xl bg-white/5 border border-white/10">
+      <div className="p-4 m-3 rounded-2xl bg-white/5 border border-white/10">
         <div className="flex items-center gap-2 text-sky-300 text-xs font-bold mb-1">
           <ShieldCheck className="w-4 h-4 text-sky-400" />
           <span>Perfil Activo</span>

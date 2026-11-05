@@ -288,10 +288,11 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onS
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="form-label-standard">
+                <label htmlFor="select-ambiente" className="form-label-standard">
                   Ambiente Universitario <span className="text-red-500">*</span>
                 </label>
                 <select
+                  id="select-ambiente"
                   value={ambienteId}
                   onChange={(e) => {
                     setAmbienteId(e.target.value);
@@ -309,10 +310,11 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onS
               </div>
 
               <div>
-                <label className="form-label-standard">
+                <label htmlFor="select-usuario" className="form-label-standard">
                   Docente / Solicitante <span className="text-red-500">*</span>
                 </label>
                 <select
+                  id="select-usuario"
                   value={usuarioId}
                   onChange={(e) => setUsuarioId(e.target.value)}
                   disabled={Boolean(usuario && usuario.rol !== 'Administrador')}
@@ -346,7 +348,6 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onS
                 label="Hora de Inicio"
                 name="horaInicio"
                 type="time"
-                step={1800}
                 value={horaInicio}
                 onChange={(e) => {
                   setHoraInicio(e.target.value);
@@ -359,7 +360,6 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onS
                 label="Hora de Fin"
                 name="horaFin"
                 type="time"
-                step={1800}
                 value={horaFin}
                 onChange={(e) => {
                   setHoraFin(e.target.value);
@@ -440,10 +440,11 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onS
             )}
 
             <div>
-              <label className="form-label-standard">
+              <label htmlFor="textarea-motivo" className="form-label-standard">
                 Motivo Académico / Institucional <span className="text-red-500">*</span>
               </label>
               <textarea
+                id="textarea-motivo"
                 rows={3}
                 value={motivo}
                 onChange={(e) => setMotivo(e.target.value)}

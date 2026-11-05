@@ -39,6 +39,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   };
 
   const isClickable = Boolean(onClick);
+  const isLongText = typeof value === 'string' && value.length > 5;
 
   return (
     <div
@@ -55,13 +56,13 @@ export const StatCard: React.FC<StatCardProps> = ({
       }
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}
-      className={`bg-surface p-5 rounded-2xl border border-line shadow-2xs transition-all duration-200 ${
+      className={`bg-surface p-5 rounded-2xl border border-line shadow-2xs transition-all duration-200 flex flex-col justify-between h-full ${
         isClickable
           ? 'cursor-pointer hover:shadow-md hover:border-primary/40 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
           : ''
       } ${className}`}
     >
-      <div className={`flex ${layout === 'horizontal' ? 'flex-row items-center justify-between' : 'flex-col'} gap-3`}>
+      <div className={`flex ${layout === 'horizontal' ? 'flex-row items-center justify-between' : 'flex-col justify-between h-full'} gap-3 flex-1`}>
         <div className="flex items-center justify-between w-full">
           <span className="text-xs font-bold uppercase tracking-wider text-ink-muted">
             {title}
@@ -73,14 +74,21 @@ export const StatCard: React.FC<StatCardProps> = ({
           )}
         </div>
 
-        <div>
+        <div className="mt-auto">
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl sm:text-3xl font-black text-ink tracking-tight tabular-nums">
+            <span
+              className={`font-black text-ink tracking-tight ${
+                isLongText
+                  ? 'text-base sm:text-lg leading-snug line-clamp-2'
+                  : 'text-2xl sm:text-3xl tabular-nums'
+              }`}
+              title={typeof value === 'string' ? value : undefined}
+            >
               {value}
             </span>
             {badge && (
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-3xs font-extrabold border ${
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-3xs font-extrabold border shrink-0 ${
                   badgeColors[badge.variant || 'neutral']
                 }`}
               >

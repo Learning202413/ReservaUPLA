@@ -83,7 +83,7 @@ export const RechazarReservaModal: React.FC<RechazarReservaModalProps> = ({
         <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200 text-xs flex items-start gap-2.5">
           <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
           <p className="leading-relaxed">
-            El solicitante podrá visualizar este motivo detallado en su panel de reservas para comprender el dictamen institucional (Principio de Cierre y Retroalimentación).
+            El solicitante podrá visualizar este motivo detallado en su panel de reservas para comprender el dictamen institucional.
           </p>
         </div>
 

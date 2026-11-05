@@ -104,10 +104,10 @@ export const api = {
 
     // Validación algorítmica local (RN-01, RN-03, RN-04)
     if (horaFin <= horaInicio) {
-      return { disponible: false, mensaje: 'RN-03: La hora de fin debe ser posterior a la de inicio.' };
+      return { disponible: false, mensaje: 'La hora de fin debe ser posterior a la de inicio.' };
     }
     if (horaInicio < '07:00' || horaFin > '22:00') {
-      return { disponible: false, mensaje: 'RN-04: Las reservas solo operan entre las 07:00 y 22:00 horas.' };
+      return { disponible: false, mensaje: 'Las reservas solo operan entre las 07:00 y 22:00 horas.' };
     }
 
     const conflicto = localReservas.some(
@@ -115,7 +115,7 @@ export const api = {
     );
 
     if (conflicto) {
-      return { disponible: false, mensaje: 'RN-01: Conflicto. Ya existe una reserva aprobada para ese horario.' };
+      return { disponible: false, mensaje: 'Conflicto. Ya existe una reserva aprobada para ese horario.' };
     }
 
     return { disponible: true, mensaje: 'Horario 100% disponible.' };
@@ -186,7 +186,7 @@ export const api = {
 
     const r = localReservas.find((res) => res.id === id);
     if (!r) throw new Error('Reserva no encontrada');
-    if (r.estado === 'Rechazada') throw new Error('RN-06: Una reserva rechazada no puede modificarse.');
+    if (r.estado === 'Rechazada') throw new Error('Una reserva en estado Rechazada no puede modificarse.');
     r.estado = nuevoEstado as any;
     if (motivoRechazo) r.motivoRechazo = motivoRechazo;
   },

@@ -235,10 +235,11 @@ export const UsuariosPage: React.FC = () => {
           />
 
           <div>
-            <label className="form-label-standard">
+            <label htmlFor="select-rol-usuario" className="form-label-standard">
               Rol Asignado en el Sistema <span className="text-red-500">*</span>
             </label>
             <select
+              id="select-rol-usuario"
               value={rol}
               onChange={(e) => setRol(e.target.value)}
               className="form-input-standard"
