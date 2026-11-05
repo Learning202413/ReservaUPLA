@@ -35,18 +35,47 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const effectiveSubtitle = subtitle || description;
 
-  // Manejo de Escape
+  // Manejo de Escape, Focus Trap y bloqueo de scroll en el body
   useEffect(() => {
     if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    // Enfocar el modal al abrir
+    modalRef.current?.focus();
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
+        return;
+      }
+
+      // Confinamiento de foco (Focus Trap básico)
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length > 0) {
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+
+          if (e.shiftKey && document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          } else if (!e.shiftKey && document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -63,6 +92,9 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
 
   return (
     <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
@@ -70,14 +102,15 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
     >
       <div
         ref={modalRef}
-        className={`bg-surface rounded-2xl w-full border border-line-strong shadow-2xl overflow-hidden flex flex-col ${maxWidthClasses[maxWidth]} ${className}`}
+        tabIndex={-1}
+        className={`bg-surface rounded-2xl w-full border border-line-strong shadow-2xl overflow-hidden flex flex-col outline-none ${maxWidthClasses[maxWidth]} ${className}`}
       >
         {(title || showCloseButton) && (
           <div className="px-5 py-4 sm:px-6 sm:py-4.5 border-b border-line flex items-center justify-between gap-3 shrink-0">
             <div className="flex items-center gap-3 min-w-0">
               {Icon && (
                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${iconClassName}`}>
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-5 h-5" aria-hidden="true" />
                 </div>
               )}
               <div className="min-w-0">
@@ -98,10 +131,10 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="text-ink-muted hover:text-ink hover:bg-slate-100 p-1.5 rounded-lg transition-colors cursor-pointer shrink-0"
+                className="w-9 h-9 flex items-center justify-center text-ink-muted hover:text-ink hover:bg-slate-100 dark:hover:bg-slate-800 p-2 rounded-xl transition-colors cursor-pointer shrink-0 focus:outline-none focus:ring-2 focus:ring-primary/20"
                 aria-label="Cerrar modal"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" aria-hidden="true" />
               </button>
             )}
           </div>

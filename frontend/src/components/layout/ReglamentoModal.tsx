@@ -1,6 +1,7 @@
 import React from 'react';
 import { ModalWrapper } from '../ui/ModalWrapper';
-import { BookOpen, Clock, ShieldCheck, Users, AlertCircle } from 'lucide-react';
+import { Button } from '../ui/Button';
+import { BookOpen, Clock, ShieldCheck, Users, AlertCircle, Check } from 'lucide-react';
 
 interface ReglamentoModalProps {
   isOpen: boolean;
@@ -21,7 +22,7 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
         <div className="flex items-center justify-between p-3 rounded-xl bg-canvas border border-line">
           <img
             src="/upla_logo_horizontal.png"
-            alt="UPLA"
+            alt="Logo institucional Universidad Peruana Los Andes"
             className="h-8 w-auto object-contain"
           />
           <span className="text-3xs font-extrabold uppercase tracking-widest text-primary dark:text-sky-400 bg-sky-50 dark:bg-sky-950/80 px-2 py-0.5 rounded-md border border-sky-200 dark:border-sky-800">
@@ -30,7 +31,7 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
         </div>
 
         <div className="p-3.5 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 text-sky-900 dark:text-sky-200 flex items-start gap-2.5">
-          <AlertCircle className="w-4 h-4 text-primary dark:text-sky-400 shrink-0 mt-0.5" />
+          <AlertCircle className="w-4 h-4 text-primary dark:text-sky-400 shrink-0 mt-0.5" aria-hidden="true" />
           <p className="text-xs leading-relaxed">
             Este reglamento ayuda a que todos los docentes y facultades compartan los ambientes de forma justa, sin cruces ni malos entendidos.
           </p>
@@ -38,7 +39,7 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
 
         <div className="space-y-3">
           <div className="flex items-start gap-3 p-3 rounded-xl bg-canvas border border-line">
-            <Clock className="w-5 h-5 text-primary dark:text-sky-400 shrink-0 mt-0.5" />
+            <Clock className="w-5 h-5 text-primary dark:text-sky-400 shrink-0 mt-0.5" aria-hidden="true" />
             <div>
               <p className="font-bold text-ink">Horarios de Reserva</p>
               <p className="text-2xs text-ink-muted mt-0.5">
@@ -48,7 +49,7 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
           </div>
 
           <div className="flex items-start gap-3 p-3 rounded-xl bg-canvas border border-line">
-            <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+            <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" aria-hidden="true" />
             <div>
               <p className="font-bold text-ink">Sin Cruces de Horario</p>
               <p className="text-2xs text-ink-muted mt-0.5">
@@ -58,7 +59,7 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
           </div>
 
           <div className="flex items-start gap-3 p-3 rounded-xl bg-canvas border border-line">
-            <Users className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+            <Users className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" aria-hidden="true" />
             <div>
               <p className="font-bold text-ink">Capacidad y Aforo</p>
               <p className="text-2xs text-ink-muted mt-0.5">
@@ -71,6 +72,18 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
         <div className="pt-3 border-t border-line text-2xs text-ink-faint flex items-center justify-between">
           <span>Universidad Peruana Los Andes</span>
           <span>Vicerrectorado Académico</span>
+        </div>
+
+        <div className="pt-2 flex justify-end">
+          <Button
+            type="button"
+            variant="primary"
+            size="md"
+            icon={<Check className="w-4 h-4" />}
+            onClick={onClose}
+          >
+            Entendido y Aceptar
+          </Button>
         </div>
       </div>
     </ModalWrapper>

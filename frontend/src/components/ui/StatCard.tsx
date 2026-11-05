@@ -43,11 +43,21 @@ export const StatCard: React.FC<StatCardProps> = ({
   return (
     <div
       onClick={onClick}
+      onKeyDown={
+        isClickable
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick?.();
+              }
+            }
+          : undefined
+      }
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}
       className={`bg-surface p-5 rounded-2xl border border-line shadow-2xs transition-all duration-200 ${
         isClickable
-          ? 'cursor-pointer hover:shadow-md hover:border-primary/40 active:scale-[0.99]'
+          ? 'cursor-pointer hover:shadow-md hover:border-primary/40 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
           : ''
       } ${className}`}
     >
@@ -58,7 +68,7 @@ export const StatCard: React.FC<StatCardProps> = ({
           </span>
           {Icon && (
             <div className={`p-2.5 rounded-xl border border-line-soft ${iconBg} ${iconColor || ''}`}>
-              <Icon className="w-5 h-5 shrink-0" />
+              <Icon className="w-5 h-5 shrink-0" aria-hidden="true" />
             </div>
           )}
         </div>
@@ -79,7 +89,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             )}
           </div>
           {subtitle && (
-            <p className="text-xs text-ink-faint mt-1 leading-snug">
+            <p className="text-xs text-ink-muted mt-1 leading-snug">
               {subtitle}
             </p>
           )}

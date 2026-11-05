@@ -20,6 +20,7 @@ export const AmbientesPage: React.FC = () => {
   const [modalAbierto, setModalAbierto] = useState<boolean>(false);
   const [busqueda, setBusqueda] = useState<string>('');
   const [message, setMessage] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<'success' | 'error' | 'info'>('info');
 
   // Form State
   const [nombre, setNombre] = useState<string>('');
@@ -47,6 +48,7 @@ export const AmbientesPage: React.FC = () => {
     e.preventDefault();
     if (!nombre.trim() || !ubicacion.trim() || capacidad <= 0) {
       setMessage('Complete los campos obligatorios con una capacidad válida mayor a 0.');
+      setMessageType('error');
       return;
     }
 
@@ -60,12 +62,14 @@ export const AmbientesPage: React.FC = () => {
         estado: estado as any,
       });
       setMessage('Ambiente universitario registrado exitosamente.');
+      setMessageType('success');
       setModalAbierto(false);
       setNombre('');
       setUbicacion('');
       await cargar();
     } catch {
       setMessage('Error al registrar el ambiente.');
+      setMessageType('error');
     } finally {
       setGuardando(false);
     }
@@ -100,7 +104,7 @@ export const AmbientesPage: React.FC = () => {
 
       {message && (
         <FormMessage
-          type="info"
+          type={messageType}
           message={message}
         />
       )}

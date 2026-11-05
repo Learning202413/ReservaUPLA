@@ -353,8 +353,8 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
                     </>
                   )}
 
-                  {/* Acción de Solicitante: Cancelar propia solicitud (Puente de Ejecución / Control de Usuario) */}
-                  {!esAdmin && r.estado === 'Pendiente' && (
+                  {/* Acción de Solicitante: Cancelar propia solicitud (Locus de control / Permisos por propietario) */}
+                  {!esAdmin && r.usuarioId === usuario?.id && r.estado === 'Pendiente' && (
                     <ActionButton
                       size="sm"
                       variant="danger"

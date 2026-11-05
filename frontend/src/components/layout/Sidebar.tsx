@@ -66,6 +66,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
   ];
 
+  // Manejo de Escape en el drawer móvil (ISO 9241-171 / Norman)
+  React.useEffect(() => {
+    if (!isOpenMobile || !onCloseMobile) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onCloseMobile();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpenMobile, onCloseMobile]);
+
   const handleSelect = (id: PaginaActiva) => {
     onSelectPagina(id);
     if (onCloseMobile) onCloseMobile();
@@ -100,9 +112,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {onCloseMobile && (
             <button
               onClick={onCloseMobile}
-              className="lg:hidden text-sky-300 hover:text-white p-1 rounded-lg cursor-pointer"
+              className="lg:hidden w-9 h-9 flex items-center justify-center p-2 rounded-xl text-sky-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-400"
+              aria-label="Cerrar menú lateral"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           )}
         </div>
@@ -128,13 +141,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <button
                       key={item.id}
                       onClick={() => handleSelect(item.id)}
-                      className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                      aria-current={isActive ? 'page' : undefined}
+                      className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
                         isActive
                           ? 'bg-[#006699] text-white shadow-md shadow-sky-950/40 border border-sky-400/30'
                           : 'text-sky-100/80 hover:text-white hover:bg-white/10'
                       }`}
                     >
-                      <span className={isActive ? 'text-white' : 'text-sky-300'}>
+                      <span className={isActive ? 'text-white' : 'text-sky-300'} aria-hidden="true">
                         {item.icon}
                       </span>
                       <span>{item.label}</span>

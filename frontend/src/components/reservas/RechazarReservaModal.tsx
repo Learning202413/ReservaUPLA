@@ -28,6 +28,14 @@ export const RechazarReservaModal: React.FC<RechazarReservaModalProps> = ({
   const [motivo, setMotivo] = useState('');
   const [error, setError] = useState<string | null>(null);
 
+  // Limpieza de estado al cerrar para evitar fugas entre reservas (Norman - Slips)
+  React.useEffect(() => {
+    if (!isOpen) {
+      setMotivo('');
+      setError(null);
+    }
+  }, [isOpen]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!motivo.trim() || motivo.trim().length < 5) {

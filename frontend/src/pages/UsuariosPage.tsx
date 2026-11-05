@@ -25,6 +25,7 @@ export const UsuariosPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [modalAbierto, setModalAbierto] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<'success' | 'error' | 'info'>('info');
   const [busqueda, setBusqueda] = useState<string>('');
   const [paginaActual, setPaginaActual] = useState<number>(1);
   const itemsPorPagina = 8;
@@ -53,6 +54,7 @@ export const UsuariosPage: React.FC = () => {
     e.preventDefault();
     if (!nombre.trim() || !correo.trim()) {
       setMessage('El nombre y el correo institucional son campos obligatorios.');
+      setMessageType('error');
       return;
     }
 
@@ -64,12 +66,14 @@ export const UsuariosPage: React.FC = () => {
         rol: rol as any,
       });
       setMessage('Usuario solicitante registrado exitosamente en el sistema.');
+      setMessageType('success');
       setModalAbierto(false);
       setNombre('');
       setCorreo('');
       await cargar();
     } catch {
       setMessage('Error al registrar usuario.');
+      setMessageType('error');
     } finally {
       setGuardando(false);
     }
@@ -113,7 +117,7 @@ export const UsuariosPage: React.FC = () => {
 
       {message && (
         <FormMessage
-          type="info"
+          type={messageType}
           message={message}
         />
       )}

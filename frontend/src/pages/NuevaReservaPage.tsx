@@ -19,13 +19,14 @@ import {
 } from 'lucide-react';
 
 interface NuevaReservaPageProps {
+  usuario?: Usuario | null;
   onSuccess: () => void;
   onVolver?: () => void;
 }
 
 const DRAFT_KEY = 'reservaupla_draft_reserva';
 
-export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ onSuccess, onVolver }) => {
+export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onSuccess, onVolver }) => {
   const [ambientes, setAmbientes] = useState<Ambiente[]>([]);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -90,11 +91,19 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ onSuccess, o
           setBorradorRecuperado(true);
         } catch {
           if (ambData.length > 0) setAmbienteId(ambData[0].id);
-          if (usuData.length > 0) setUsuarioId(usuData[0].id);
+          if (usuario && usuario.rol !== 'Administrador') {
+            setUsuarioId(usuario.id);
+          } else if (usuData.length > 0) {
+            setUsuarioId(usuData[0].id);
+          }
         }
       } else {
         if (ambData.length > 0) setAmbienteId(ambData[0].id);
-        if (usuData.length > 0) setUsuarioId(usuData[0].id);
+        if (usuario && usuario.rol !== 'Administrador') {
+          setUsuarioId(usuario.id);
+        } else if (usuData.length > 0) {
+          setUsuarioId(usuData[0].id);
+        }
       }
 
       initialLoadDone.current = true;
@@ -306,7 +315,8 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ onSuccess, o
                 <select
                   value={usuarioId}
                   onChange={(e) => setUsuarioId(e.target.value)}
-                  className="form-input-standard"
+                  disabled={Boolean(usuario && usuario.rol !== 'Administrador')}
+                  className="form-input-standard disabled:bg-slate-100 dark:disabled:bg-slate-800/60 disabled:cursor-not-allowed disabled:text-ink-muted"
                   required
                 >
                   {usuarios.map((u) => (

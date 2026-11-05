@@ -31,12 +31,15 @@ export const ScheduleTimeline: React.FC<ScheduleTimelineProps> = ({
 }) => {
   const [reservasDia, setReservasDia] = useState<Reserva[]>([]);
   const [cargando, setCargando] = useState<boolean>(false);
+  const [errorCarga, setErrorCarga] = useState<string | null>(null);
+  const [reintento, setReintento] = useState(0);
 
   useEffect(() => {
     let activo = true;
     async function cargar() {
       if (!ambienteId || !fecha) return;
       setCargando(true);
+      setErrorCarga(null);
       try {
         const todas = await api.getReservas();
         if (activo) {
@@ -50,7 +53,9 @@ export const ScheduleTimeline: React.FC<ScheduleTimelineProps> = ({
           setReservasDia(filtradas);
         }
       } catch (err) {
-        console.error('Error al cargar disponibilidad para timeline:', err);
+        if (activo) {
+          setErrorCarga('No se pudo sincronizar la disponibilidad horaria con el servidor.');
+        }
       } finally {
         if (activo) setCargando(false);
       }
@@ -59,7 +64,7 @@ export const ScheduleTimeline: React.FC<ScheduleTimelineProps> = ({
     return () => {
       activo = false;
     };
-  }, [ambienteId, fecha]);
+  }, [ambienteId, fecha, reintento]);
 
   // Generar bloques de 07:00 a 22:00 (15 horas)
   const horas = Array.from({ length: 15 }, (_, i) => {
@@ -143,6 +148,19 @@ export const ScheduleTimeline: React.FC<ScheduleTimelineProps> = ({
           <span>Ocupado (Aprobada)</span>
         </span>
       </div>
+
+      {errorCarga && (
+        <div className="p-3 mb-3 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-xs flex items-center justify-between">
+          <span>{errorCarga}</span>
+          <button
+            type="button"
+            onClick={() => setReintento((r) => r + 1)}
+            className="text-xs font-bold text-amber-800 dark:text-amber-300 underline cursor-pointer hover:text-amber-900"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
 
       {cargando ? (
         <div className="py-8 text-center text-xs text-ink-muted animate-pulse">

@@ -70,6 +70,7 @@ export function App() {
 
       {paginaActiva === 'nueva-reserva' && (
         <NuevaReservaPage
+          usuario={usuario}
           onSuccess={() => setPaginaActiva('reservas')}
           onVolver={() => setPaginaActiva('reservas')}
         />

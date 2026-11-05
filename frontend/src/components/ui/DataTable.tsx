@@ -110,8 +110,22 @@ export const TableRow: React.FC<{
 }> = ({ children, className = '', onClick }) => (
   <tr
     onClick={onClick}
+    tabIndex={onClick ? 0 : undefined}
+    role={onClick ? 'button' : undefined}
+    onKeyDown={
+      onClick
+        ? (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onClick();
+            }
+          }
+        : undefined
+    }
     className={`hover:bg-slate-100/70 dark:hover:bg-slate-800/50 transition-colors ${
-      onClick ? 'cursor-pointer' : ''
+      onClick
+        ? 'cursor-pointer focus:outline-none focus:bg-slate-100/90 dark:focus:bg-slate-800/80 focus:ring-1 focus:ring-primary'
+        : ''
     } ${className}`}
   >
     {children}

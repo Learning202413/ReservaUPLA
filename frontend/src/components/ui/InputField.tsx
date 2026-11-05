@@ -39,7 +39,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(({
       type="button"
       tabIndex={0}
       onClick={() => setShowPassword(!showPassword)}
-      className="text-xs font-bold text-accent hover:text-primary px-2.5 py-1 rounded transition-colors cursor-pointer"
+      className="text-xs font-bold text-accent hover:text-primary px-3 py-1.5 min-h-[36px] flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
       aria-label={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
     >
       {showPassword ? 'Ocultar' : 'Mostrar'}
@@ -49,12 +49,12 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(({
   return (
     <div className={`mb-2 text-left ${className}`}>
       <label htmlFor={inputId} className="form-label-standard">
-        {label} {required && <span className="text-red-500">*</span>}
+        {label} {required && <span className="text-red-500" aria-hidden="true">*</span>}
       </label>
 
       <div className="relative flex items-center">
         {leftIcon && (
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-ink-muted z-10">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-ink-muted z-10" aria-hidden="true">
             {leftIcon}
           </div>
         )}
@@ -70,12 +70,12 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(({
           required={required}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${inputId}-error` : undefined}
-          className={`w-full min-h-[44px] py-2.5 rounded-xl border text-sm transition-all duration-150 outline-none text-ink placeholder:text-ink-faint bg-surface ${
+          className={`w-full min-h-[44px] py-2.5 rounded-xl border text-sm transition-all duration-150 outline-none text-ink placeholder:text-ink-muted/80 bg-surface disabled:bg-slate-100 dark:disabled:bg-slate-800/60 disabled:cursor-not-allowed disabled:text-ink-muted read-only:bg-slate-50 dark:read-only:bg-slate-800/40 ${
             leftIcon ? 'pl-11' : 'pl-3.5'
           } ${renderRightElement ? 'pr-20' : 'pr-3.5'} ${
             error
-              ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-              : 'border-line-strong focus:border-primary focus:ring-2 focus:ring-primary/20'
+              ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-900/40'
+              : 'border-line focus:border-primary dark:focus:border-accent focus:ring-2 focus:ring-primary/20 dark:focus:ring-accent/20'
           }`}
           {...props}
         />
