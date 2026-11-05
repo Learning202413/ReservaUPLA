@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Trash2, CheckCircle2 } from 'lucide-react';
+import { Trash2, CheckCircle2, AlertTriangle, type LucideIcon } from 'lucide-react';
 import { ModalWrapper } from './ModalWrapper';
 import { Button } from './Button';
 
@@ -10,10 +10,13 @@ export interface ConfirmModalProps {
   loading?: boolean;
   title?: string;
   subtitle?: string;
+  description?: string;
   confirmText?: string;
   cancelText?: string;
   confirmVariant?: 'danger' | 'primary' | 'success';
-  icon?: React.ReactNode;
+  icon?: LucideIcon;
+  iconClassName?: string;
+  children?: React.ReactNode;
 }
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -23,27 +26,41 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   loading = false,
   title = '¿Está seguro de continuar?',
   subtitle,
+  description,
   confirmText = 'Confirmar',
   cancelText = 'Cancelar',
   confirmVariant = 'primary',
   icon,
+  iconClassName,
+  children,
 }) => {
-  const iconByVariant: Record<string, React.ReactNode> = {
-    danger: <Trash2 className="w-6 h-6 text-rose-600 dark:text-rose-400" />,
-    primary: <AlertTriangle className="w-6 h-6 text-primary dark:text-sky-400" />,
-    success: <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />,
+  const defaultIconByVariant: Record<string, LucideIcon> = {
+    danger: Trash2,
+    primary: CheckCircle2,
+    success: CheckCircle2,
   };
 
-  const bgByVariant: Record<string, string> = {
-    danger: 'bg-rose-50 dark:bg-rose-950/70 border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400',
-    primary: 'bg-sky-50 dark:bg-sky-950/70 border-sky-200 dark:border-sky-800 text-primary dark:text-sky-400',
-    success: 'bg-emerald-50 dark:bg-emerald-950/70 border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400',
+  const defaultIconClassByVariant: Record<string, string> = {
+    danger:
+      'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/70 border border-rose-200 dark:border-rose-800',
+    primary:
+      'text-primary dark:text-sky-300 bg-sky-50 dark:bg-sky-950/70 border border-sky-200 dark:border-sky-800',
+    success:
+      'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800',
   };
+
+  const ResolvedIcon = icon || defaultIconByVariant[confirmVariant] || AlertTriangle;
+  const resolvedIconClass =
+    iconClassName || defaultIconClassByVariant[confirmVariant];
 
   return (
     <ModalWrapper
       isOpen={isOpen}
       onClose={onClose}
+      title={title}
+      subtitle={subtitle || description}
+      icon={ResolvedIcon}
+      iconClassName={resolvedIconClass}
       maxWidth="md"
       showCloseButton={!loading}
       footer={
@@ -68,21 +85,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         </div>
       }
     >
-      <div className="flex items-start gap-4">
-        <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center shrink-0 ${bgByVariant[confirmVariant]}`}>
-          {icon || iconByVariant[confirmVariant]}
-        </div>
-        <div className="flex-1">
-          <h4 className="text-base font-bold font-sans text-ink">
-            {title}
-          </h4>
-          {subtitle && (
-            <p className="mt-1.5 text-xs text-ink-muted leading-relaxed">
-              {subtitle}
-            </p>
-          )}
-        </div>
-      </div>
+      {children}
     </ModalWrapper>
   );
 };

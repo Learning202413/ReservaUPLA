@@ -55,34 +55,28 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
   // Modal para Aprobación (Admin)
   const [modalAprobar, setModalAprobar] = useState<{
     abierto: boolean;
-    reservaId: string;
-    ambienteNombre: string;
+    reserva: Reserva | null;
   }>({
     abierto: false,
-    reservaId: '',
-    ambienteNombre: '',
+    reserva: null,
   });
 
   // Modal para Rechazo con justificación (Admin)
   const [modalRechazar, setModalRechazar] = useState<{
     abierto: boolean;
-    reservaId: string;
-    ambienteNombre: string;
+    reserva: Reserva | null;
   }>({
     abierto: false,
-    reservaId: '',
-    ambienteNombre: '',
+    reserva: null,
   });
 
   // Modal para Cancelar solicitud por el usuario solicitante
   const [modalCancelar, setModalCancelar] = useState<{
     abierto: boolean;
-    reservaId: string;
-    ambienteNombre: string;
+    reserva: Reserva | null;
   }>({
     abierto: false,
-    reservaId: '',
-    ambienteNombre: '',
+    reserva: null,
   });
 
   const [procesando, setProcesando] = useState<boolean>(false);
@@ -146,11 +140,12 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
 
   // Acciones de administración
   const handleConfirmarAprobar = async () => {
+    if (!modalAprobar.reserva) return;
     setProcesando(true);
     try {
-      await api.cambiarEstadoReserva(modalAprobar.reservaId, 'Aprobada', 'Administrador');
+      await api.cambiarEstadoReserva(modalAprobar.reserva.id, 'Aprobada', 'Administrador');
       await cargarReservas();
-      setModalAprobar((prev) => ({ ...prev, abierto: false }));
+      setModalAprobar({ abierto: false, reserva: null });
     } catch (err) {
       console.error('Error al aprobar reserva:', err);
     } finally {
@@ -159,16 +154,17 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
   };
 
   const handleConfirmarRechazar = async (motivo: string) => {
+    if (!modalRechazar.reserva) return;
     setProcesando(true);
     try {
       await api.cambiarEstadoReserva(
-        modalRechazar.reservaId,
+        modalRechazar.reserva.id,
         'Rechazada',
         'Administrador',
         motivo
       );
       await cargarReservas();
-      setModalRechazar((prev) => ({ ...prev, abierto: false }));
+      setModalRechazar({ abierto: false, reserva: null });
     } catch (err) {
       console.error('Error al rechazar reserva:', err);
     } finally {
@@ -178,15 +174,16 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
 
   // Acción de cancelación por parte del solicitante (Locus de control / Puente de Ejecución)
   const handleConfirmarCancelar = async () => {
+    if (!modalCancelar.reserva) return;
     setProcesando(true);
     try {
       await api.cambiarEstadoReserva(
-        modalCancelar.reservaId,
+        modalCancelar.reserva.id,
         'Cancelada',
         usuario?.rol || 'Docente'
       );
       await cargarReservas();
-      setModalCancelar((prev) => ({ ...prev, abierto: false }));
+      setModalCancelar({ abierto: false, reserva: null });
     } catch (err) {
       console.error('Error al cancelar reserva:', err);
     } finally {
@@ -325,8 +322,7 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
                         onClick={() =>
                           setModalAprobar({
                             abierto: true,
-                            reservaId: r.id,
-                            ambienteNombre: r.ambienteNombre,
+                            reserva: r,
                           })
                         }
                         className="text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/60"
@@ -342,8 +338,7 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
                         onClick={() =>
                           setModalRechazar({
                             abierto: true,
-                            reservaId: r.id,
-                            ambienteNombre: r.ambienteNombre,
+                            reserva: r,
                           })
                         }
                         title="Rechazar solicitud con motivo detallado"
@@ -362,8 +357,7 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
                       onClick={() =>
                         setModalCancelar({
                           abierto: true,
-                          reservaId: r.id,
-                          ambienteNombre: r.ambienteNombre,
+                          reserva: r,
                         })
                       }
                       title="Cancelar mi solicitud de reserva"
@@ -468,38 +462,110 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
         )}
       </ModalWrapper>
 
-      {/* Modal de Confirmación para Aprobar */}
+      {/* Modal de Confirmación para Aprobar (Semiótica Positiva y Ficha Contextual) */}
       <ConfirmModal
         isOpen={modalAprobar.abierto}
-        onClose={() => setModalAprobar((prev) => ({ ...prev, abierto: false }))}
+        onClose={() => setModalAprobar({ abierto: false, reserva: null })}
         onConfirm={handleConfirmarAprobar}
         loading={procesando}
         title="¿Aprobar solicitud de reserva?"
-        subtitle={`Ambiente: ${modalAprobar.ambienteNombre}. Esta acción formalizará el turno y lo reflejará en el cronograma oficial.`}
-        confirmText="Aprobar Reserva"
-        confirmVariant="primary"
-      />
+        subtitle="Dictamen formal de asignación de espacio institucional"
+        confirmText="Aprobar y Confirmar Turno"
+        confirmVariant="success"
+      >
+        {modalAprobar.reserva && (
+          <div className="space-y-3 text-left font-sans">
+            <div className="p-3.5 rounded-xl bg-canvas/70 border border-line space-y-2.5 text-xs">
+              <div className="flex items-start justify-between gap-2 border-b border-line/60 pb-2">
+                <div>
+                  <span className="text-3xs font-extrabold uppercase tracking-widest text-ink-muted block">
+                    Ambiente Solicitado
+                  </span>
+                  <span className="font-bold text-ink text-sm">
+                    {modalAprobar.reserva.ambienteNombre}
+                  </span>
+                </div>
+                <span className="text-3xs font-bold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shrink-0">
+                  En Dictamen
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-2xs">
+                <div>
+                  <span className="text-ink-muted block font-medium">Docente / Solicitante:</span>
+                  <span className="font-bold text-ink truncate block">
+                    {modalAprobar.reserva.solicitanteNombre}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-ink-muted block font-medium">Fecha y Horario:</span>
+                  <span className="font-bold text-ink block">
+                    {modalAprobar.reserva.fecha} | {modalAprobar.reserva.horaInicio} a {modalAprobar.reserva.horaFin}
+                  </span>
+                </div>
+              </div>
+
+              {modalAprobar.reserva.motivo && (
+                <div className="border-t border-line/60 pt-2 text-2xs">
+                  <span className="text-ink-muted block font-medium">Justificación del Requerimiento:</span>
+                  <p className="text-ink italic line-clamp-2 mt-0.5">
+                    "{modalAprobar.reserva.motivo}"
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <p className="text-2xs text-ink-muted leading-relaxed">
+              Esta acción formalizará el turno y lo reflejará en el cronograma oficial de la Universidad Peruana Los Andes, bloqueando el espacio ante otros pedidos.
+            </p>
+          </div>
+        )}
+      </ConfirmModal>
 
       {/* Modal con Motivo Detallado para Rechazar (Norman - Feedback & Shneiderman) */}
       <RechazarReservaModal
         isOpen={modalRechazar.abierto}
-        ambienteNombre={modalRechazar.ambienteNombre}
+        reserva={modalRechazar.reserva}
         loading={procesando}
-        onClose={() => setModalRechazar((prev) => ({ ...prev, abierto: false }))}
+        onClose={() => setModalRechazar({ abierto: false, reserva: null })}
         onConfirm={handleConfirmarRechazar}
       />
 
       {/* Modal de Confirmación para Cancelar Solicitud (Locus de Control) */}
       <ConfirmModal
         isOpen={modalCancelar.abierto}
-        onClose={() => setModalCancelar((prev) => ({ ...prev, abierto: false }))}
+        onClose={() => setModalCancelar({ abierto: false, reserva: null })}
         onConfirm={handleConfirmarCancelar}
         loading={procesando}
         title="¿Cancelar su solicitud de reserva?"
-        subtitle={`Ambiente: ${modalCancelar.ambienteNombre}. La solicitud será anulada inmediatamente y el turno quedará libre para otros docentes.`}
+        subtitle="Anulación voluntaria del requerimiento institucional"
         confirmText="Sí, Cancelar Solicitud"
         confirmVariant="danger"
-      />
+      >
+        {modalCancelar.reserva && (
+          <div className="space-y-3 text-left font-sans">
+            <div className="p-3.5 rounded-xl bg-canvas/70 border border-line space-y-2 text-xs">
+              <div className="border-b border-line/60 pb-2">
+                <span className="text-3xs font-extrabold uppercase tracking-widest text-ink-muted block">
+                  Ambiente Reservado
+                </span>
+                <span className="font-bold text-ink text-sm">
+                  {modalCancelar.reserva.ambienteNombre}
+                </span>
+              </div>
+              <div className="text-2xs">
+                <span className="text-ink-muted block font-medium">Horario programado:</span>
+                <span className="font-bold text-ink block">
+                  {modalCancelar.reserva.fecha} ({modalCancelar.reserva.horaInicio} - {modalCancelar.reserva.horaFin})
+                </span>
+              </div>
+            </div>
+            <p className="text-2xs text-rose-600 dark:text-rose-400 leading-relaxed font-semibold">
+              La solicitud será anulada inmediatamente y el turno quedará liberado en el cronograma oficial para que otros docentes puedan disponer del ambiente.
+            </p>
+          </div>
+        )}
+      </ConfirmModal>
     </PageContainer>
   );
 };
