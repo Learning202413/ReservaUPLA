@@ -13,32 +13,47 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
     <ModalWrapper
       isOpen={isOpen}
       onClose={onClose}
-      title="Reglamento y Guía de Uso de Ambientes"
-      subtitle="Políticas institucionales de reserva para el campus UPLA"
+      title="Guía y Normativa de Ambientes"
+      subtitle="Políticas oficiales de reserva institucional UPLA"
       icon={BookOpen}
-      maxWidth="lg"
+      maxWidth="md"
+      bodyClassName="p-4 sm:p-5"
+      footer={
+        <div className="flex items-center justify-between w-full">
+          <span className="text-3xs text-ink-faint">UPLA • Vicerrectorado Académico</span>
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
+            icon={<Check className="w-4 h-4" />}
+            onClick={onClose}
+          >
+            Entendido
+          </Button>
+        </div>
+      }
     >
-      <div className="space-y-4 text-left text-xs sm:text-sm text-ink-muted">
-        <div className="flex items-center justify-between p-3 rounded-xl bg-canvas border border-line">
+      <div className="space-y-3 text-left text-xs text-ink-muted">
+        <div className="flex items-center justify-between p-2.5 rounded-xl bg-canvas border border-line">
           <img
             src="/upla_logo_horizontal.png"
             alt="Logo institucional Universidad Peruana Los Andes"
-            className="h-8 w-auto object-contain"
+            className="h-7 w-auto object-contain"
           />
           <span className="text-3xs font-extrabold uppercase tracking-widest text-primary dark:text-sky-400 bg-sky-50 dark:bg-sky-950/80 px-2 py-0.5 rounded-md border border-sky-200 dark:border-sky-800">
             Normativa Oficial
           </span>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 text-sky-900 dark:text-sky-200 flex items-start gap-2.5">
+        <div className="p-3 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 text-sky-900 dark:text-sky-200 flex items-start gap-2.5">
           <AlertCircle className="w-4 h-4 text-primary dark:text-sky-400 shrink-0 mt-0.5" aria-hidden="true" />
-          <p className="text-xs leading-relaxed">
+          <p className="text-2xs leading-relaxed">
             Para evitar cruces de horarios y garantizar que todos los docentes cuenten con sus espacios a tiempo, las reservas en la Universidad Peruana Los Andes se gestionan bajo las siguientes normas:
           </p>
         </div>
 
-        <div className="space-y-3">
-          <div className="flex items-start gap-3 p-3.5 rounded-xl bg-canvas border border-line">
+        <div className="space-y-2.5">
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-canvas border border-line">
             <div className="w-2 h-2 rounded-full bg-sky-500 shrink-0 mt-1.5" />
             <div>
               <p className="font-bold text-ink text-xs">Horario de Atención del Campus</p>
@@ -48,7 +63,7 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
             </div>
           </div>
 
-          <div className="flex items-start gap-3 p-3.5 rounded-xl bg-canvas border border-line">
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-canvas border border-line">
             <div className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 mt-1.5" />
             <div>
               <p className="font-bold text-ink text-xs">Disponibilidad sin Cruces</p>
@@ -58,7 +73,7 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
             </div>
           </div>
 
-          <div className="flex items-start gap-3 p-3.5 rounded-xl bg-canvas border border-line">
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-canvas border border-line">
             <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0 mt-1.5" />
             <div>
               <p className="font-bold text-ink text-xs">Datos Completos de la Solicitud</p>
@@ -68,7 +83,7 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
             </div>
           </div>
 
-          <div className="flex items-start gap-3 p-3.5 rounded-xl bg-canvas border border-line">
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-canvas border border-line">
             <div className="w-2 h-2 rounded-full bg-purple-500 shrink-0 mt-1.5" />
             <div>
               <p className="font-bold text-ink text-xs">Revisión y Dictamen Administrativo</p>
@@ -77,23 +92,6 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
               </p>
             </div>
           </div>
-        </div>
-
-        <div className="pt-3 border-t border-line text-2xs text-ink-faint flex items-center justify-between">
-          <span>Universidad Peruana Los Andes</span>
-          <span>Vicerrectorado Académico</span>
-        </div>
-
-        <div className="pt-2 flex justify-end">
-          <Button
-            type="button"
-            variant="primary"
-            size="md"
-            icon={<Check className="w-4 h-4" />}
-            onClick={onClose}
-          >
-            Entendido y Aceptar
-          </Button>
         </div>
       </div>
     </ModalWrapper>

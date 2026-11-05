@@ -103,7 +103,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className={`bg-surface rounded-2xl w-full border border-line-strong shadow-2xl overflow-hidden flex flex-col outline-none ${maxWidthClasses[maxWidth]} ${className}`}
+        className={`bg-surface rounded-2xl w-full max-h-[88vh] border border-line-strong shadow-2xl overflow-hidden flex flex-col outline-none ${maxWidthClasses[maxWidth]} ${className}`}
       >
         {(title || showCloseButton) && (
           <div className="px-5 py-4 sm:px-6 sm:py-4.5 border-b border-line flex items-center justify-between gap-3 shrink-0">
