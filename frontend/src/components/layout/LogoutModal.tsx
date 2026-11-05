@@ -14,26 +14,49 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({
   onConfirm,
   loading = false,
 }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
   const cancelBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => {
-        cancelBtnRef.current?.focus();
-      }, 50);
-    }
-  }, [isOpen]);
+    if (!isOpen) return;
 
-  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+      cancelBtnRef.current?.focus();
+    }, 50);
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
       if (e.key === 'Escape') {
         e.preventDefault();
         onClose();
+        return;
+      }
+
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusables = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusables.length > 0) {
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -46,10 +69,11 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200"
     >
       <div
+        ref={modalRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="logout-title"
-        className="bg-surface rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-line text-center relative"
+        className="bg-surface rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-line text-center relative outline-none"
       >
         <button
           type="button"

@@ -92,7 +92,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(({
           <p
             id={`${inputId}-error`}
             role="alert"
-            className="text-xs text-red-600 font-semibold flex items-center gap-1"
+            className="text-xs text-red-600 dark:text-rose-400 font-semibold flex items-center gap-1"
           >
             {error}
           </p>

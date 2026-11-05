@@ -29,7 +29,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       <div
         className={`w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-sky-50 dark:bg-sky-950/70 text-primary dark:text-sky-300 flex items-center justify-center mb-4 shadow-xs border border-sky-200 dark:border-sky-800/80 ${iconContainerClassName}`}
       >
-        <Icon className="w-8 h-8 sm:w-10 sm:h-10" />
+        <Icon className="w-8 h-8 sm:w-10 sm:h-10" aria-hidden="true" />
       </div>
 
       <h3 className="text-lg sm:text-xl font-bold font-sans text-ink mb-1">

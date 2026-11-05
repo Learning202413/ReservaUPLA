@@ -19,7 +19,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   ...props
 }) => {
   const sizeClasses = {
-    sm: 'px-2.5 py-1.5 text-xs rounded-lg min-h-[34px] gap-1.5',
+    sm: 'px-3 py-1.5 text-xs rounded-lg min-h-[36px] sm:min-h-[38px] gap-1.5',
     md: 'px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl min-h-[38px] gap-2',
     lg: 'px-4 py-2.5 text-sm sm:text-base font-bold rounded-xl min-h-[44px] gap-2.5',
   };
@@ -36,10 +36,10 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
     <button
       type="button"
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center transition-all cursor-pointer select-none disabled:opacity-60 disabled:cursor-not-allowed ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
+      className={`inline-flex items-center justify-center transition-all cursor-pointer select-none active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 disabled:opacity-60 disabled:cursor-not-allowed ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
       {...props}
     >
-      {Icon && <Icon className={`w-4 h-4 shrink-0 ${loading ? 'animate-spin' : ''}`} />}
+      {Icon && <Icon className={`w-4 h-4 shrink-0 ${loading ? 'animate-spin' : ''}`} aria-hidden="true" />}
       {children}
     </button>
   );

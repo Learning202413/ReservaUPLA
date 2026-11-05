@@ -103,9 +103,9 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => setMenuAbierto(!menuAbierto)}
               className={`flex items-center gap-3 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl transition-all cursor-pointer border ${
                 menuAbierto
-                  ? 'bg-slate-100 dark:bg-slate-800 border-line shadow-2xs ring-2 ring-primary/15'
+                  ? 'bg-slate-100 dark:bg-slate-800 border-line shadow-2xs ring-2 ring-primary/20'
                   : 'border-transparent hover:border-line hover:bg-slate-100 dark:hover:bg-slate-800'
-              } focus:outline-none`}
+              } focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface`}
               aria-expanded={menuAbierto}
               aria-haspopup="true"
             >
