@@ -1,7 +1,6 @@
 import React from 'react';
 import { ModalWrapper } from '../ui/ModalWrapper';
-import { Button } from '../ui/Button';
-import { BookOpen, AlertCircle, Check } from 'lucide-react';
+import { BookOpen, AlertCircle } from 'lucide-react';
 
 interface ReglamentoModalProps {
   isOpen: boolean;
@@ -18,20 +17,6 @@ export const ReglamentoModal: React.FC<ReglamentoModalProps> = ({ isOpen, onClos
       icon={BookOpen}
       maxWidth="md"
       bodyClassName="p-4 sm:p-5"
-      footer={
-        <div className="flex items-center justify-between w-full">
-          <span className="text-3xs text-ink-faint">UPLA • Vicerrectorado Académico</span>
-          <Button
-            type="button"
-            variant="primary"
-            size="sm"
-            icon={<Check className="w-4 h-4" />}
-            onClick={onClose}
-          >
-            Entendido
-          </Button>
-        </div>
-      }
     >
       <div className="space-y-3 text-left text-xs text-ink-muted">
         <div className="flex items-center justify-between p-2.5 rounded-xl bg-canvas border border-line">
