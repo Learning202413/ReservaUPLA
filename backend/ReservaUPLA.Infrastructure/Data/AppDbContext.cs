@@ -55,6 +55,7 @@ public class AppDbContext : DbContext
         // Seed Data Inicial para UPLA
         var adminId = Guid.Parse("11111111-1111-1111-1111-111111111111");
         var docenteId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        var responsableId = Guid.Parse("88888888-8888-8888-8888-888888888888");
 
         modelBuilder.Entity<Usuario>().HasData(
             new Usuario
@@ -71,6 +72,14 @@ public class AppDbContext : DbContext
                 Usu_NombreCompleto = "Ing. Carlos Mendoza (Docente Sistemas)",
                 Usu_Correo = "cmendoza@upla.edu.pe",
                 Usu_Rol = "Solicitante",
+                Usu_Activo = true
+            },
+            new Usuario
+            {
+                Id_Usuario = responsableId,
+                Usu_NombreCompleto = "Dra. María Elena Quispe (Jefa Práctica)",
+                Usu_Correo = "mquispe@upla.edu.pe",
+                Usu_Rol = "Responsable",
                 Usu_Activo = true
             }
         );

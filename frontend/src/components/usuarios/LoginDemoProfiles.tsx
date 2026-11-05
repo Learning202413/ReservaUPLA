@@ -41,15 +41,6 @@ export const LoginDemoProfiles: React.FC<LoginDemoProfilesProps> = ({ onSelectDe
         >
           Responsable Ambiente
         </button>
-
-        <button
-          type="button"
-          onClick={() => onSelectDemo('inactivo@upla.edu.pe', 'inactivo123')}
-          className="px-2.5 py-1 bg-rose-50 dark:bg-rose-950/50 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 rounded-lg text-xs font-medium transition-colors cursor-pointer"
-          title="Prueba de cuenta con estado inactivo"
-        >
-          Inactivo (Prueba)
-        </button>
       </div>
     </div>
   );

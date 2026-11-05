@@ -11,10 +11,15 @@ import {
 import { PageHeader } from '../components/layout/PageHeader';
 import { PageContainer } from '../components/layout/PageContainer';
 import { api } from '../services/api';
-import { Ambiente } from '../types';
+import { Ambiente, Usuario } from '../types';
 import { Plus, Users, MapPin, Building2 } from 'lucide-react';
 
-export const AmbientesPage: React.FC = () => {
+export interface AmbientesPageProps {
+  usuario?: Usuario | null;
+}
+
+export const AmbientesPage: React.FC<AmbientesPageProps> = ({ usuario }) => {
+  const puedeAdministrar = usuario?.rol === 'Administrador' || usuario?.rol === 'Responsable';
   const [ambientes, setAmbientes] = useState<Ambiente[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [modalAbierto, setModalAbierto] = useState<boolean>(false);
@@ -91,14 +96,16 @@ export const AmbientesPage: React.FC = () => {
         count={ambientesFiltrados.length}
         countLabel="ambientes"
         actions={
-          <Button
-            variant="primary"
-            size="md"
-            icon={<Plus className="w-4 h-4" />}
-            onClick={() => setModalAbierto(true)}
-          >
-            Registrar Ambiente
-          </Button>
+          puedeAdministrar ? (
+            <Button
+              variant="primary"
+              size="md"
+              icon={<Plus className="w-4 h-4" />}
+              onClick={() => setModalAbierto(true)}
+            >
+              Registrar Ambiente
+            </Button>
+          ) : undefined
         }
       />
 
@@ -133,8 +140,8 @@ export const AmbientesPage: React.FC = () => {
         <EmptyState
           title="No se encontraron ambientes"
           description="No hay espacios físicos registrados que coincidan con la búsqueda."
-          actionLabel="Registrar nuevo ambiente"
-          onAction={() => setModalAbierto(true)}
+          actionLabel={puedeAdministrar ? "Registrar nuevo ambiente" : undefined}
+          onAction={puedeAdministrar ? () => setModalAbierto(true) : undefined}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

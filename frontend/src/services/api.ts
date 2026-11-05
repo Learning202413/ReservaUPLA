@@ -6,7 +6,7 @@ const API_BASE = '/api';
 let localUsuarios: Usuario[] = [
   { id: '11111111-1111-1111-1111-111111111111', nombreCompleto: 'Administrador General UPLA', correo: 'admin@upla.edu.pe', rol: 'Administrador', activo: true },
   { id: '22222222-2222-2222-2222-222222222222', nombreCompleto: 'Ing. Carlos Mendoza (Docente Sistemas)', correo: 'cmendoza@upla.edu.pe', rol: 'Solicitante', activo: true },
-  { id: '33333333-3333-3333-3333-333333333333', nombreCompleto: 'Dra. María Elena Quispe (Jefa Práctica)', correo: 'mquispe@upla.edu.pe', rol: 'Responsable', activo: true },
+  { id: '88888888-8888-8888-8888-888888888888', nombreCompleto: 'Dra. María Elena Quispe (Jefa Práctica)', correo: 'mquispe@upla.edu.pe', rol: 'Responsable', activo: true },
 ];
 
 let localAmbientes: Ambiente[] = [

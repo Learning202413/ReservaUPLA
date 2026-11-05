@@ -77,7 +77,7 @@ export function App() {
       )}
 
       {paginaActiva === 'ambientes' && (
-        <AmbientesPage />
+        <AmbientesPage usuario={usuario} />
       )}
 
       {paginaActiva === 'usuarios' && (
