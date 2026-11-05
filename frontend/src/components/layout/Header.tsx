@@ -132,24 +132,32 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Menú Desplegable con ancho simétrico y anclaje Gestalt (Norman / Nielsen / Shneiderman) */}
             {menuAbierto && (
               <div
-                className="absolute right-0 mt-2 w-full min-w-[270px] bg-surface rounded-2xl shadow-xl border border-line p-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
+                className="absolute right-0 mt-2 w-72 bg-surface rounded-2xl shadow-xl border border-line p-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
                 role="menu"
               >
-                <div className="px-3.5 py-3 border-b border-line bg-canvas/60 rounded-xl mb-1">
-                  <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <span className="text-3xs font-extrabold uppercase tracking-widest text-ink-muted">
-                      Sesión Activa
+                <div className="p-3 border-b border-line bg-canvas/60 rounded-xl mb-1">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-[#006699] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-2xs">
+                      {iniciales}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-bold text-ink truncate leading-tight">
+                        {usuario?.nombreCompleto || 'Usuario'}
+                      </p>
+                      <p className="text-2xs text-ink-muted font-medium truncate mt-0.5">
+                        {usuario?.correo || ''}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-2.5 pt-2 border-t border-line/60 flex items-center justify-between gap-2">
+                    <span className="text-3xs font-semibold text-ink-muted">
+                      Rol asignado
                     </span>
-                    <span className="text-3xs font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/70 text-primary dark:text-sky-300 border border-sky-200 dark:border-sky-800">
+                    <span className="text-3xs font-bold px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/70 text-primary dark:text-sky-300 border border-sky-200 dark:border-sky-800 shrink-0">
                       {usuario?.rol || 'Solicitante'}
                     </span>
                   </div>
-                  <p className="text-xs font-black text-ink truncate">
-                    {usuario?.nombreCompleto || 'Usuario'}
-                  </p>
-                  <p className="text-2xs text-ink-muted font-medium truncate mt-0.5">
-                    {usuario?.correo || ''}
-                  </p>
                 </div>
 
                 <div className="p-0.5">
