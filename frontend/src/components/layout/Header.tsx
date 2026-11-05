@@ -101,11 +101,15 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={() => setMenuAbierto(!menuAbierto)}
-              className="flex items-center gap-3 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer border border-transparent hover:border-line focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className={`flex items-center gap-3 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl transition-all cursor-pointer border ${
+                menuAbierto
+                  ? 'bg-slate-100 dark:bg-slate-800 border-line shadow-2xs ring-2 ring-primary/15'
+                  : 'border-transparent hover:border-line hover:bg-slate-100 dark:hover:bg-slate-800'
+              } focus:outline-none`}
               aria-expanded={menuAbierto}
               aria-haspopup="true"
             >
-              <div className="w-8 h-8 rounded-full bg-[#006699] text-white flex items-center justify-center font-black text-xs shadow-2xs">
+              <div className="w-8 h-8 rounded-full bg-[#006699] text-white flex items-center justify-center font-black text-xs shadow-2xs shrink-0">
                 {iniciales}
               </div>
 
@@ -118,25 +122,34 @@ export const Header: React.FC<HeaderProps> = ({
                 </p>
               </div>
 
-              <ChevronDown className={`w-3.5 h-3.5 text-ink-muted transition-transform duration-200 hidden sm:block ${menuAbierto ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-3.5 h-3.5 text-ink-muted transition-transform duration-200 hidden sm:block ${
+                  menuAbierto ? 'rotate-180' : ''
+                }`}
+              />
             </button>
 
-            {/* Menú Desplegable (GirasolesRes Pattern) */}
+            {/* Menú Desplegable con ancho simétrico y anclaje Gestalt (Norman / Nielsen / Shneiderman) */}
             {menuAbierto && (
               <div
-                className="absolute right-0 mt-2 w-60 bg-surface rounded-2xl shadow-xl border border-line p-1 z-50 animate-in fade-in zoom-in-95 duration-100"
+                className="absolute right-0 mt-2 w-full min-w-[270px] bg-surface rounded-2xl shadow-xl border border-line p-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
                 role="menu"
               >
-                <div className="px-3.5 py-2.5 border-b border-line bg-canvas/40 rounded-xl mb-1">
+                <div className="px-3.5 py-3 border-b border-line bg-canvas/60 rounded-xl mb-1">
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <span className="text-3xs font-extrabold uppercase tracking-widest text-ink-muted">
+                      Sesión Activa
+                    </span>
+                    <span className="text-3xs font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/70 text-primary dark:text-sky-300 border border-sky-200 dark:border-sky-800">
+                      {usuario?.rol || 'Solicitante'}
+                    </span>
+                  </div>
                   <p className="text-xs font-black text-ink truncate">
                     {usuario?.nombreCompleto || 'Usuario'}
                   </p>
                   <p className="text-2xs text-ink-muted font-medium truncate mt-0.5">
                     {usuario?.correo || ''}
                   </p>
-                  <span className="inline-block mt-2 text-3xs font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/70 text-primary dark:text-sky-300 border border-sky-200 dark:border-sky-800">
-                    {usuario?.rol || 'Solicitante'}
-                  </span>
                 </div>
 
                 <div className="p-0.5">
@@ -146,10 +159,10 @@ export const Header: React.FC<HeaderProps> = ({
                       setMenuAbierto(false);
                       onLogout();
                     }}
-                    className="w-full px-3 py-2 rounded-xl text-xs text-left text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 flex items-center gap-2 cursor-pointer transition-colors font-bold"
+                    className="w-full px-3 py-2.5 rounded-xl text-xs text-left text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 flex items-center gap-2.5 cursor-pointer transition-colors font-bold"
                     role="menuitem"
                   >
-                    <LogOut className="w-4 h-4" />
+                    <LogOut className="w-4 h-4 shrink-0" />
                     <span>Cerrar Sesión</span>
                   </button>
                 </div>
