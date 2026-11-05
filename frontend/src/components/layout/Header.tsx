@@ -23,7 +23,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [modalReglamento, setModalReglamento] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Cerrar menú al hacer clic afuera
+  // Cerrar menú al hacer clic afuera o presionar Escape (Norman - Asequibilidad por teclado)
   useEffect(() => {
     if (!menuAbierto) return;
     const handleClickOutside = (event: MouseEvent) => {
@@ -31,8 +31,17 @@ export const Header: React.FC<HeaderProps> = ({
         setMenuAbierto(false);
       }
     };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMenuAbierto(false);
+      }
+    };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [menuAbierto]);
 
   const iniciales = usuario?.nombreCompleto
@@ -115,26 +124,29 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Menú Desplegable (GirasolesRes Pattern) */}
             {menuAbierto && (
               <div
-                className="absolute right-0 mt-2 w-56 bg-surface rounded-2xl shadow-xl border border-line py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
+                className="absolute right-0 mt-2 w-60 bg-surface rounded-2xl shadow-xl border border-line p-1 z-50 animate-in fade-in zoom-in-95 duration-100"
                 role="menu"
               >
-                <div className="px-4 py-2.5 border-b border-line">
-                  <p className="text-xs font-bold text-ink truncate">
-                    {usuario?.nombreCompleto}
+                <div className="px-3.5 py-2.5 border-b border-line bg-canvas/40 rounded-xl mb-1">
+                  <p className="text-xs font-black text-ink truncate">
+                    {usuario?.nombreCompleto || 'Usuario'}
                   </p>
-                  <p className="text-2xs text-ink-muted truncate mt-0.5">
-                    {usuario?.correo}
+                  <p className="text-2xs text-ink-muted font-medium truncate mt-0.5">
+                    {usuario?.correo || ''}
                   </p>
+                  <span className="inline-block mt-2 text-3xs font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/70 text-primary dark:text-sky-300 border border-sky-200 dark:border-sky-800">
+                    {usuario?.rol || 'Solicitante'}
+                  </span>
                 </div>
 
-                <div className="p-1">
+                <div className="p-0.5">
                   <button
                     type="button"
                     onClick={() => {
                       setMenuAbierto(false);
                       onLogout();
                     }}
-                    className="w-full px-3 py-2 rounded-xl text-xs text-left text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center gap-2 cursor-pointer transition-colors font-semibold"
+                    className="w-full px-3 py-2 rounded-xl text-xs text-left text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 flex items-center gap-2 cursor-pointer transition-colors font-bold"
                     role="menuitem"
                   >
                     <LogOut className="w-4 h-4" />
