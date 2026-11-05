@@ -19,7 +19,7 @@ export interface AmbientesPageProps {
 }
 
 export const AmbientesPage: React.FC<AmbientesPageProps> = ({ usuario }) => {
-  const puedeAdministrar = usuario?.rol === 'Administrador' || usuario?.rol === 'Responsable';
+  const puedeAdministrar = usuario?.rol === 'Administrador';
   const [ambientes, setAmbientes] = useState<Ambiente[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [modalAbierto, setModalAbierto] = useState<boolean>(false);

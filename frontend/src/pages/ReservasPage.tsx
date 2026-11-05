@@ -115,6 +115,7 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
   }, []);
 
   const esAdmin = usuario?.rol === 'Administrador';
+  const puedeSolicitar = usuario?.rol !== 'Responsable';
 
   // Filtrado
   const reservasFiltradas = reservas.filter((r) => {
@@ -200,14 +201,16 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
         count={reservasFiltradas.length}
         countLabel="solicitudes"
         actions={
-          <Button
-            variant="primary"
-            size="md"
-            icon={<PlusCircle className="w-4 h-4" />}
-            onClick={onNuevaReservaClick}
-          >
-            Nueva Reserva
-          </Button>
+          puedeSolicitar ? (
+            <Button
+              variant="primary"
+              size="md"
+              icon={<PlusCircle className="w-4 h-4" />}
+              onClick={onNuevaReservaClick}
+            >
+              Nueva Reserva
+            </Button>
+          ) : undefined
         }
       />
 
@@ -250,8 +253,8 @@ export const ReservasPage: React.FC<ReservasPageProps> = ({
         isEmpty={reservasFiltradas.length === 0}
         emptyTitle="No se encontraron solicitudes"
         emptyMessage="No hay reservas que coincidan con los criterios de búsqueda o filtros seleccionados."
-        emptyActionLabel="Registrar nueva reserva"
-        onEmptyAction={onNuevaReservaClick}
+        emptyActionLabel={puedeSolicitar ? "Registrar nueva reserva" : undefined}
+        onEmptyAction={puedeSolicitar ? onNuevaReservaClick : undefined}
       >
         <TableHead>
           <tr>

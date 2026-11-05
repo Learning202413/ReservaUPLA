@@ -3,7 +3,7 @@ import { StatCard, Button, StatusBadge } from '../components/ui';
 import { PageHeader } from '../components/layout/PageHeader';
 import { PageContainer } from '../components/layout/PageContainer';
 import { api } from '../services/api';
-import { DashboardKpis, Reserva } from '../types';
+import { DashboardKpis, Reserva, Usuario } from '../types';
 import {
   CalendarDays,
   Clock,
@@ -16,11 +16,13 @@ import {
 } from 'lucide-react';
 
 interface DashboardPageProps {
+  usuario?: Usuario | null;
   onNuevaReservaClick: () => void;
   onVerTodasClick: () => void;
 }
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({
+  usuario,
   onNuevaReservaClick,
   onVerTodasClick,
 }) => {
@@ -61,14 +63,16 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           </span>
         }
         actions={
-          <Button
-            variant="primary"
-            size="md"
-            icon={<PlusCircle className="w-4 h-4" />}
-            onClick={onNuevaReservaClick}
-          >
-            Solicitar Reserva
-          </Button>
+          usuario?.rol !== 'Responsable' ? (
+            <Button
+              variant="primary"
+              size="md"
+              icon={<PlusCircle className="w-4 h-4" />}
+              onClick={onNuevaReservaClick}
+            >
+              Solicitar Reserva
+            </Button>
+          ) : undefined
         }
       />
 

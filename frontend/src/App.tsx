@@ -56,6 +56,7 @@ export function App() {
     >
       {paginaActiva === 'dashboard' && (
         <DashboardPage
+          usuario={usuario}
           onNuevaReservaClick={() => setPaginaActiva('nueva-reserva')}
           onVerTodasClick={() => setPaginaActiva('reservas')}
         />
@@ -69,11 +70,18 @@ export function App() {
       )}
 
       {paginaActiva === 'nueva-reserva' && (
-        <NuevaReservaPage
-          usuario={usuario}
-          onSuccess={() => setPaginaActiva('reservas')}
-          onVolver={() => setPaginaActiva('reservas')}
-        />
+        usuario?.rol === 'Responsable' ? (
+          <ReservasPage
+            usuario={usuario}
+            onNuevaReservaClick={() => setPaginaActiva('nueva-reserva')}
+          />
+        ) : (
+          <NuevaReservaPage
+            usuario={usuario}
+            onSuccess={() => setPaginaActiva('reservas')}
+            onVolver={() => setPaginaActiva('reservas')}
+          />
+        )
       )}
 
       {paginaActiva === 'ambientes' && (
@@ -81,7 +89,15 @@ export function App() {
       )}
 
       {paginaActiva === 'usuarios' && (
-        <UsuariosPage />
+        usuario?.rol === 'Administrador' ? (
+          <UsuariosPage />
+        ) : (
+          <DashboardPage
+            usuario={usuario}
+            onNuevaReservaClick={() => setPaginaActiva('nueva-reserva')}
+            onVerTodasClick={() => setPaginaActiva('reservas')}
+          />
+        )
       )}
     </MainLayout>
   );
