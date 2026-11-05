@@ -172,28 +172,28 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="bg-sidebar text-white rounded-2xl p-6 shadow-md flex flex-col justify-between border border-sidebar-line">
           <div>
             <span className="text-3xs font-extrabold uppercase tracking-widest text-sky-300">
-              Guía Rápida de Uso
+              Reglas de Negocio Oficiales
             </span>
             <h3 className="text-lg font-black mt-1 text-white">
-              Reglas para Reservar
+              Políticas de Reserva UPLA
             </h3>
             <p className="text-xs text-sky-100/90 mt-2.5 leading-relaxed font-normal">
-              Para que todos los docentes y estudiantes usen los ambientes de forma ordenada, ten en cuenta estas 3 reglas:
+              Las solicitudes se procesan bajo las reglas mínimas del sistema ReservaUPLA:
             </p>
           </div>
 
           <div className="mt-6 pt-4 border-t border-white/10 text-xs text-sky-200/90 space-y-2.5 font-medium">
-            <p className="flex items-center gap-2.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-              <span><strong>Sin cruces:</strong> No se pueden pedir horarios que ya estén ocupados.</span>
+            <p className="flex items-start gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 mt-1" />
+              <span><strong>RN-01:</strong> No se permite más de una reserva aprobada para el mismo ambiente, fecha y horario.</span>
             </p>
-            <p className="flex items-center gap-2.5">
-              <span className="w-2 h-2 rounded-full bg-sky-400 shrink-0" />
-              <span><strong>Horario:</strong> El campus atiende de <strong>07:00 a 22:00</strong>.</span>
+            <p className="flex items-start gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-sky-400 shrink-0 mt-1" />
+              <span><strong>RN-04:</strong> Las reservas solo podrán realizarse entre las 07:00 y 22:00 horas.</span>
             </p>
-            <p className="flex items-center gap-2.5">
-              <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
-              <span><strong>Revisión:</strong> Administración revisa y aprueba cada solicitud.</span>
+            <p className="flex items-start gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0 mt-1" />
+              <span><strong>RN-05:</strong> Solo el administrador puede aprobar o rechazar una reserva.</span>
             </p>
           </div>
         </div>
