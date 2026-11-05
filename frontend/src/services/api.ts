@@ -94,8 +94,10 @@ export const api = {
   },
 
   async verificarDisponibilidad(ambienteId: string, fecha: string, horaInicio: string, horaFin: string): Promise<{ disponible: boolean; mensaje: string }> {
+    const hIni = horaInicio.length === 5 ? `${horaInicio}:00` : horaInicio;
+    const hFin = horaFin.length === 5 ? `${horaFin}:00` : horaFin;
     try {
-      const res = await fetch(`${API_BASE}/Reservas/verificar-disponibilidad?ambienteId=${ambienteId}&fecha=${fecha}&horaInicio=${horaInicio}&horaFin=${horaFin}`);
+      const res = await fetch(`${API_BASE}/Reservas/verificar-disponibilidad?ambienteId=${ambienteId}&fecha=${fecha}&horaInicio=${hIni}&horaFin=${hFin}`);
       const data = await res.json();
       return { disponible: res.ok && data.disponible, mensaje: data.mensaje || data.error };
     } catch {}
@@ -120,16 +122,26 @@ export const api = {
   },
 
   async crearReserva(input: CrearReservaInput): Promise<Reserva> {
+    const formatTime = (t: string) => (t && t.length === 5 ? `${t}:00` : t);
+    const payload = {
+      ...input,
+      horaInicio: formatTime(input.horaInicio),
+      horaFin: formatTime(input.horaFin),
+    };
+    let createdId: string | undefined;
     try {
       const res = await fetch(`${API_BASE}/Reservas`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(input),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) {
         const error = await res.json();
-        throw new Error(error.error || 'Error al registrar reserva');
+        const msg = error.error || (error.errors ? Object.values(error.errors).flat().join(', ') : 'Error al registrar reserva');
+        throw new Error(msg);
       }
+      const data = await res.json();
+      createdId = data.id;
     } catch (e: any) {
       if (e.message && e.message !== 'Failed to fetch') throw e;
     }
@@ -138,7 +150,7 @@ export const api = {
     const ambiente = localAmbientes.find((a) => a.id === input.ambienteId);
 
     const nueva: Reserva = {
-      id: 'res-' + Math.random().toString(36).substring(2, 9),
+      id: createdId || ('res-' + Math.random().toString(36).substring(2, 9)),
       fecha: input.fecha,
       horaInicio: input.horaInicio,
       horaFin: input.horaFin,

@@ -108,5 +108,33 @@ public class AppDbContext : DbContext
                 Amb_Estado = "Disponible"
             }
         );
+
+        var res1Id = Guid.Parse("66666666-6666-6666-6666-666666666666");
+        var res2Id = Guid.Parse("77777777-7777-7777-7777-777777777777");
+
+        modelBuilder.Entity<Reserva>().HasData(
+            new Reserva
+            {
+                Id_Reserva = res1Id,
+                Res_Fecha = DateOnly.FromDateTime(DateTime.Today),
+                Res_HoraInicio = new TimeOnly(8, 0),
+                Res_HoraFin = new TimeOnly(10, 0),
+                Res_Motivo = "Clase magistral de Arquitectura de Software y Patrones de Diseño [Aforo estimado: 25 pers.]",
+                Res_Estado = "Aprobada",
+                Res_UsuarioId = docenteId,
+                Res_AmbienteId = lab1Id
+            },
+            new Reserva
+            {
+                Id_Reserva = res2Id,
+                Res_Fecha = DateOnly.FromDateTime(DateTime.Today),
+                Res_HoraInicio = new TimeOnly(11, 0),
+                Res_HoraFin = new TimeOnly(13, 0),
+                Res_Motivo = "Sustentación de tesis de grado Escuela Profesional de Sistemas [Aforo estimado: 40 pers.]",
+                Res_Estado = "Pendiente",
+                Res_UsuarioId = docenteId,
+                Res_AmbienteId = audiId
+            }
+        );
     }
 }
