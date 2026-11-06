@@ -26,6 +26,13 @@ interface NuevaReservaPageProps {
 
 const DRAFT_KEY = 'reservaupla_draft_reserva';
 
+const getLocalDateString = (d = new Date()) => {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onSuccess, onVolver }) => {
   const [ambientes, setAmbientes] = useState<Ambiente[]>([]);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -34,13 +41,13 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onS
   const [messageType, setMessageType] = useState<'success' | 'error' | 'warning' | 'info' | ''>('');
   const [borradorRecuperado, setBorradorRecuperado] = useState<boolean>(false);
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = getLocalDateString();
   const [ambienteId, setAmbienteId] = useState<string>('');
   const [usuarioId, setUsuarioId] = useState<string>('');
   const [fecha, setFecha] = useState<string>(today);
   const [horaInicio, setHoraInicio] = useState<string>('08:00');
   const [horaFin, setHoraFin] = useState<string>('10:00');
-  const [personasEstimadas, setPersonasEstimadas] = useState<number>(25);
+  const [personasEstimadas, setPersonasEstimadas] = useState<number | ''>(25);
   const [motivo, setMotivo] = useState<string>('');
 
   // Ticket modal de confirmación y cierre cognitivo (Shneiderman Regla 3 / Norman)
@@ -194,13 +201,14 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onS
       return;
     }
 
-    // Restricción de tiempo real si es el mismo día
+    // Restricción de tiempo real si es el mismo día (usando hora y fecha local, no UTC)
     const now = new Date();
+    const todayLocal = getLocalDateString(now);
     const currentHourStr = `${now.getHours().toString().padStart(2, '0')}:${now
       .getMinutes()
       .toString()
       .padStart(2, '0')}`;
-    if (fecha === today && horaInicio < currentHourStr) {
+    if (fecha === todayLocal && horaInicio < currentHourStr) {
       setMessage(
         `No se puede solicitar una reserva en un horario anterior al actual (${currentHourStr}).`
       );
@@ -210,13 +218,14 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onS
 
     setLoading(true);
     try {
+      const aforoFinal = typeof personasEstimadas === 'number' && personasEstimadas > 0 ? personasEstimadas : 1;
       const nueva = await api.crearReserva({
         ambienteId,
         usuarioId,
         fecha,
         horaInicio,
         horaFin,
-        motivo: `${motivo.trim()} [Aforo estimado: ${personasEstimadas} pers.]`,
+        motivo: `${motivo.trim()} [Aforo estimado: ${aforoFinal} pers.]`,
       });
 
       // Limpiar borrador tras éxito (Norman - Cierre del ciclo de acción)
@@ -235,7 +244,9 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onS
 
   const ambienteSeleccionado = ambientes.find((a) => a.id === ambienteId);
   const aforoExcedido =
-    ambienteSeleccionado && personasEstimadas > ambienteSeleccionado.capacidad;
+    ambienteSeleccionado &&
+    typeof personasEstimadas === 'number' &&
+    personasEstimadas > ambienteSeleccionado.capacidad;
 
   // Notificación institucional de anticipación 24h
   const esMenor24Horas = fecha === today;
@@ -375,7 +386,10 @@ export const NuevaReservaPage: React.FC<NuevaReservaPageProps> = ({ usuario, onS
                 min={1}
                 max={500}
                 value={personasEstimadas}
-                onChange={(e) => setPersonasEstimadas(parseInt(e.target.value, 10) || 1)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setPersonasEstimadas(val === '' ? '' : parseInt(val, 10));
+                }}
                 required
               />
             </div>

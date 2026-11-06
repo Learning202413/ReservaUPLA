@@ -30,7 +30,7 @@ export const AmbientesPage: React.FC<AmbientesPageProps> = ({ usuario }) => {
   // Form State
   const [nombre, setNombre] = useState<string>('');
   const [tipo, setTipo] = useState<string>('Laboratorio');
-  const [capacidad, setCapacidad] = useState<number>(35);
+  const [capacidad, setCapacidad] = useState<number | ''>(35);
   const [ubicacion, setUbicacion] = useState<string>('');
   const [estado, setEstado] = useState<string>('Disponible');
   const [guardando, setGuardando] = useState<boolean>(false);
@@ -51,7 +51,7 @@ export const AmbientesPage: React.FC<AmbientesPageProps> = ({ usuario }) => {
 
   const handleCrear = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nombre.trim() || !ubicacion.trim() || capacidad <= 0) {
+    if (!nombre.trim() || !ubicacion.trim() || typeof capacidad !== 'number' || capacidad <= 0) {
       setMessage('Complete los campos obligatorios con una capacidad válida mayor a 0.');
       setMessageType('error');
       return;
@@ -225,8 +225,11 @@ export const AmbientesPage: React.FC<AmbientesPageProps> = ({ usuario }) => {
               name="capacidad"
               type="number"
               min="1"
-              value={String(capacidad)}
-              onChange={(e) => setCapacidad(Number(e.target.value))}
+              value={capacidad}
+              onChange={(e) => {
+                const val = e.target.value;
+                setCapacidad(val === '' ? '' : Number(val));
+              }}
               required
             />
           </div>

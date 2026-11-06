@@ -34,6 +34,17 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const effectiveSubtitle = subtitle || description;
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  // Enfocar el contenedor del modal únicamente cuando se abre por primera vez
+  useEffect(() => {
+    if (isOpen) {
+      if (!modalRef.current?.contains(document.activeElement)) {
+        modalRef.current?.focus();
+      }
+    }
+  }, [isOpen]);
 
   // Manejo de Escape, Focus Trap y bloqueo de scroll en el body
   useEffect(() => {
@@ -42,12 +53,9 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    // Enfocar el modal al abrir
-    modalRef.current?.focus();
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
         return;
       }
 
@@ -76,7 +84,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = ({
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

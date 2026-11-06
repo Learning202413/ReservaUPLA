@@ -1,6 +1,11 @@
 import { Ambiente, CrearAmbienteInput, CrearReservaInput, CrearUsuarioInput, DashboardKpis, Reserva, Usuario } from '../types';
 
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '') + '/api';
+
+const todayDateStr = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
 
 // Datos de respaldo iniciales para demo inmediata y offline-first
 let localUsuarios: Usuario[] = [
@@ -19,7 +24,7 @@ let localAmbientes: Ambiente[] = [
 let localReservas: Reserva[] = [
   {
     id: 'res-001',
-    fecha: new Date().toISOString().split('T')[0],
+    fecha: todayDateStr(),
     horaInicio: '08:00',
     horaFin: '10:00',
     motivo: 'Clase magistral de Arquitectura de Software y Patrones de Diseño',
@@ -34,7 +39,7 @@ let localReservas: Reserva[] = [
   },
   {
     id: 'res-002',
-    fecha: new Date().toISOString().split('T')[0],
+    fecha: todayDateStr(),
     horaInicio: '11:00',
     horaFin: '13:00',
     motivo: 'Sustentación de tesis de grado Escuela Profesional de Sistemas',
