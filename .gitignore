@@ -32,6 +32,9 @@ Thumbs.db
 
 .wrangler/
 
+# Documentación externa (entregable independiente en PDF)
+docs/
+
 # Archivos temporales de Office y archivos grandes
 ~$*
 *.tmp

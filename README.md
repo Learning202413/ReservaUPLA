@@ -1,6 +1,6 @@
 # ReservaUPLA: Sistema de Gestión de Reservas de Ambientes Universitarios
 
-![UPLA Logo](docs/assets/upla_logo.png)
+![UPLA Logo](frontend/public/upla_logo.png)
 
 Solución de software integral para la gestión, validación algorítmica, trazabilidad y control de disponibilidad de ambientes universitarios (laboratorios de cómputo, auditorios, salas y talleres) en la **Universidad Peruana Los Andes (UPLA)**.
 
@@ -19,17 +19,13 @@ ReservaUPLA/
 │   ├── ReservaUPLA.Application/      # Capa 2: Casos de Uso, DTOs, Servicios y Patrón Result<T>
 │   ├── ReservaUPLA.Infrastructure/   # Capa 3: Persistencia con EF Core 8 y Repositorios
 │   └── ReservaUPLA.API/              # Capa 4: Thin Controllers REST y Swagger OpenAPI
-├── frontend/                         # Arquitectura Basada en Componentes (React 19 + TypeScript + Vite + Tailwind CSS)
-│   ├── public/upla_logo.png
-│   └── src/
-│       ├── components/ui/            # Los 9 Componentes Atómicos Reutilizables exigidos (Semana 07)
-│       ├── components/layout/        # Header y Sidebar institucional
-│       ├── views/                    # Dashboard (RF-08), Reservas (RF-05,06,07), Nueva Reserva (RF-03,04), Ambientes (RF-02), Usuarios (RF-01)
-│       └── services/api.ts           # Cliente HTTP con fallback reactivo
-└── docs/
-    ├── assets/upla_logo.png
-    ├── INFORME_TECNICO_RESERVAUPLA.md   # Informe técnico exhaustivo en Markdown (Rúbrica 20/20 pts)
-    └── INFORME_TECNICO_RESERVAUPLA.docx # Documento formal editable Word para sustentación
+└── frontend/                         # Arquitectura Basada en Componentes (React 19 + TypeScript + Vite + Tailwind CSS)
+    ├── public/upla_logo.png
+    └── src/
+        ├── components/ui/            # Los 9 Componentes Atómicos Reutilizables exigidos (Semana 07)
+        ├── components/layout/        # Header y Sidebar institucional
+        ├── views/                    # Dashboard (RF-08), Reservas (RF-05,06,07), Nueva Reserva (RF-03,04), Ambientes (RF-02), Usuarios (RF-01)
+        └── services/api.ts           # Cliente HTTP con fallback reactivo
 ```
 
 ---
