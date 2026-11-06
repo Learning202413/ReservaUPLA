@@ -28,7 +28,8 @@ ReservaUPLA/
 │       └── services/api.ts           # Cliente HTTP con fallback reactivo
 └── docs/
     ├── assets/upla_logo.png
-    └── INFORME_TECNICO_RESERVAUPLA.docx # Informe técnico formal (Rúbrica 20/20 pts)
+    ├── INFORME_TECNICO_RESERVAUPLA.md   # Informe técnico exhaustivo en Markdown (Rúbrica 20/20 pts)
+    └── INFORME_TECNICO_RESERVAUPLA.docx # Documento formal editable Word para sustentación
 ```
 
 ---
