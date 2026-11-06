@@ -56,14 +56,15 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReservaUPLA API v1");
-    c.RoutePrefix = "swagger"; // Swagger en http://localhost:5060/swagger
+    c.RoutePrefix = string.Empty; // Swagger UI directamente en la raíz
 });
 
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 app.MapControllers();
 
-// Redirección amigable de raíz a Swagger
-app.MapGet("/", () => Results.Redirect("/swagger"));
+// Redirección amigable de raíz a Swagger UI
+app.MapGet("/", () => Results.Redirect("/index.html"));
+app.MapGet("/swagger", () => Results.Redirect("/index.html"));
 
 app.Run();
